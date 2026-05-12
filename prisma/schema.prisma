@@ -1,0 +1,64 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Seller {
+  id             Int             @id @default(autoincrement())
+  clerkUserId    String          @unique @map("clerk_user_id")
+  name           String
+  email          String
+  city           String?
+  address        String?
+  iconUrl        String?         @map("icon_url")
+  products       Product[]
+  incomingOrders IncomingOrder[]
+
+  @@map("sellers")
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  sellerId    Int      @map("seller_id")
+  seller      Seller   @relation(fields: [sellerId], references: [id])
+  name        String
+  description String?
+  category    String
+  price       Float
+  stock       Int      @default(0)
+  imageUrl    String?  @map("image_url")
+  status      String   @default("active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("products")
+}
+
+model IncomingOrder {
+  id           Int                 @id @default(autoincrement())
+  sellerId     Int                 @map("seller_id")
+  seller       Seller              @relation(fields: [sellerId], references: [id])
+  buyerOrderId String              @map("buyer_order_id")
+  buyerId      String              @map("buyer_id")
+  total        Float
+  status       String              @default("recibida")
+  createdAt    DateTime            @default(now()) @map("created_at")
+  items        IncomingOrderItem[]
+
+  @@map("incoming_orders")
+}
+
+model IncomingOrderItem {
+  id                  Int           @id @default(autoincrement())
+  incomingOrderId     Int           @map("incoming_order_id")
+  incomingOrder       IncomingOrder @relation(fields: [incomingOrderId], references: [id])
+  productId           String        @map("product_id")
+  productNameSnapshot String        @map("product_name_snapshot")
+  unitPriceSnapshot   Float       @map("unit_price_snapshot")
+  quantity            Int
+
+  @@map("incoming_order_items")
+}
