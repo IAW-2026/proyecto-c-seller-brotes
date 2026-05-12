@@ -1,10 +1,21 @@
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum ProductStatus {
+  active
+  inactive
+}
+
+enum IncomingOrderStatus {
+  recibida
+  en_preparacion
+  listo
+  entregada
 }
 
 model Seller {
@@ -22,17 +33,17 @@ model Seller {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
-  sellerId    Int      @map("seller_id")
-  seller      Seller   @relation(fields: [sellerId], references: [id])
+  id          Int           @id @default(autoincrement())
+  sellerId    Int           @map("seller_id")
+  seller      Seller        @relation(fields: [sellerId], references: [id])
   name        String
   description String?
   category    String
   price       Float
-  stock       Int      @default(0)
-  imageUrl    String?  @map("image_url")
-  status      String   @default("active")
-  createdAt   DateTime @default(now()) @map("created_at")
+  stock       Int           @default(0)
+  imageUrl    String?       @map("image_url")
+  status      ProductStatus @default(active)
+  createdAt   DateTime      @default(now()) @map("created_at")
 
   @@map("products")
 }
@@ -44,7 +55,7 @@ model IncomingOrder {
   buyerOrderId String              @map("buyer_order_id")
   buyerId      String              @map("buyer_id")
   total        Float
-  status       String              @default("recibida")
+  status       IncomingOrderStatus @default(recibida)
   createdAt    DateTime            @default(now()) @map("created_at")
   items        IncomingOrderItem[]
 
@@ -57,7 +68,7 @@ model IncomingOrderItem {
   incomingOrder       IncomingOrder @relation(fields: [incomingOrderId], references: [id])
   productId           String        @map("product_id")
   productNameSnapshot String        @map("product_name_snapshot")
-  unitPriceSnapshot   Float       @map("unit_price_snapshot")
+  unitPriceSnapshot   Float         @map("unit_price_snapshot")
   quantity            Int
 
   @@map("incoming_order_items")
