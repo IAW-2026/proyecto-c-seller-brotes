@@ -1,5 +1,5 @@
 import { requireSeller } from "@/lib/auth";
-import { getOrCreateSeller } from "@/lib/seller.ts";
+import { getOrCreateSeller } from "@/lib/seller";
 import { currentUser } from "@clerk/nextjs/server";
 
 export default async function DashboardPage() {
