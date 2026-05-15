@@ -1,11 +1,20 @@
-import pkg from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
 const globalForPrisma = globalThis as unknown as {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  prisma: any;
+  prisma: PrismaClient | undefined;
+  pool: Pool | undefined;
 };
 
-export const prisma =
-  globalForPrisma.prisma ?? new pkg.PrismaClient();
+const pool = globalForPrisma.pool ?? new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.pool = pool;
+
+const adapter = new PrismaPg(pool);
+
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
