@@ -6,7 +6,7 @@ export async function requireSeller() {
 
   if (!userId) redirect("/sign-in");
 
-  const roles = (sessionClaims?.role as string[]) ?? [];
+  const roles = (sessionClaims?.metadata as string[]) ?? [];
 
   if (!roles.includes("seller")) redirect("/unauthorized");
 
