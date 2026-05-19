@@ -1,50 +1,8 @@
 import { requireSeller } from "@/lib/auth";
-import { getOrCreateSeller } from "@/lib/seller";
-import { currentUser } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
-import { ProductStatus } from "@prisma/client";
+import { createProduct } from "../actions";
 
 export default async function NewProductPage() {
   await requireSeller();
-
-  const user = await currentUser();
-  const seller = await getOrCreateSeller({
-    clerkUserId: user!.id,
-    name: `${user!.firstName} ${user!.lastName}`,
-    email: user!.emailAddresses[0].emailAddress,
-  });
-
-  async function createProduct(formData: FormData) {
-    "use server";
-
-    const name = formData.get("name") as string;
-    const description = formData.get("description") as string;
-    const category = formData.get("category") as string;
-    const price = parseFloat(formData.get("price") as string);
-    const stock = parseInt(formData.get("stock") as string);
-    const imageUrl = formData.get("imageUrl") as string;
-
-    if (!name || !category || isNaN(price) || isNaN(stock)) {
-      throw new Error("Faltan campos obligatorios");
-    }
-
-    await prisma.product.create({
-      data: {
-        sellerId: seller.id,
-        name,
-        description,
-        category,
-        price,
-        stock,
-        imageUrl: imageUrl || null,
-        status: ProductStatus.active,
-      },
-    });
-
-    redirect("/dashboard/products");
-  }
-
   return (
     <div className="flex flex-col gap-6 max-w-2xl">
       <h1 className="text-2xl font-bold text-[var(--color-verde-profundo)]">
