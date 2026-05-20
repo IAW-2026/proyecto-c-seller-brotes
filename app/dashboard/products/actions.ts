@@ -1,3 +1,4 @@
+//Archivo que agrupa todas las Server Actions relacionadas con productos
 "use server";
 
 import { prisma } from "@/lib/prisma";
