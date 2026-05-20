@@ -45,6 +45,16 @@ export default async function ProductsPage({
 
   const totalPages = Math.ceil(total / PRODUCTS_PER_PAGE);
 
+  const categoryLabels: Record<string, string> = {
+    suculentas: "Suculentas",
+    plantas_de_interior: "Plantas de interior",
+    aromaticas: "Aromáticas",
+    frutales: "Frutales",
+    cactus: "Cactus",
+    colecciones_raras: "Colecciones raras",
+    macetas_y_kits: "Macetas & kits",
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
@@ -87,7 +97,7 @@ export default async function ProductsPage({
             {products.map((product) => (
               <tr key={product.id} className="border-t border-[var(--color-gris-piedra)]">
                 <td className="px-4 py-3">{product.name}</td>
-                <td className="px-4 py-3">{product.category}</td>
+                <td className="px-4 py-3"> {categoryLabels[product.category]} </td>
                 <td className="px-4 py-3">${product.price}</td>
                 <td className="px-4 py-3">{product.stock}</td>
                 <td className="px-4 py-3">

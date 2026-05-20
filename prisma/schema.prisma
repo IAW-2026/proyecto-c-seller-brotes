@@ -18,6 +18,16 @@ enum IncomingOrderStatus {
   entregada
 }
 
+enum ProductCategory {
+  suculentas
+  plantas_de_interior
+  aromaticas
+  frutales
+  cactus
+  colecciones_raras
+  macetas_y_kits
+}
+
 model Seller {
   id             Int             @id @default(autoincrement())
   clerkUserId    String          @unique @map("clerk_user_id")
@@ -38,7 +48,7 @@ model Product {
   seller      Seller        @relation(fields: [sellerId], references: [id])
   name        String
   description String?
-  category    String
+  category    ProductCategory
   price       Float
   stock       Int           @default(0)
   imageUrl    String?       @map("image_url")

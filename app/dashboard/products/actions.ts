@@ -6,7 +6,7 @@ import { requireSeller } from "@/lib/auth";
 import { getOrCreateSeller } from "@/lib/seller";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { ProductStatus } from "@prisma/client";
+import { ProductStatus, ProductCategory } from "@prisma/client";
 
 export async function createProduct(formData: FormData) {
   await requireSeller();
@@ -20,7 +20,7 @@ export async function createProduct(formData: FormData) {
 
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
-  const category = formData.get("category") as string;
+  const category = formData.get("category") as ProductCategory;
   const price = parseFloat(formData.get("price") as string);
   const stock = parseInt(formData.get("stock") as string);
   const imageUrl = formData.get("imageUrl") as string;
@@ -56,8 +56,7 @@ export async function updateProduct(id: number, formData: FormData) {
   });
 
   const name = formData.get("name") as string;
-  const description = formData.get("description") as string;
-  const category = formData.get("category") as string;
+  const description = formData.get("description") as string; const category = formData.get("category") as ProductCategory;
   const price = parseFloat(formData.get("price") as string);
   const stock = parseInt(formData.get("stock") as string);
   const imageUrl = formData.get("imageUrl") as string;
