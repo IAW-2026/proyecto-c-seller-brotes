@@ -1,3 +1,5 @@
+import UserMenu from "@/components/UserMenu";
+
 export default function AdminLayout({
   children,
 }: {
@@ -14,6 +16,9 @@ export default function AdminLayout({
           <a href="/admin/orders" className="px-4 py-2 rounded hover:bg-[var(--color-verde-bosque)]">Pedidos</a>
           <a href="/admin/reports" className="px-4 py-2 rounded hover:bg-[var(--color-verde-bosque)]">Reportes</a>
         </nav>
+        <div className="mt-auto">
+          <UserMenu />
+        </div>
       </aside>
       <main className="flex-1 bg-[var(--color-arena)] p-8">
         {children}
