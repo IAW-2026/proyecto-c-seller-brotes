@@ -12,3 +12,15 @@ export async function requireSeller() {
 
   return { userId, roles };
 }
+
+export async function requireAdmin() {
+  const { userId, sessionClaims } = await auth();
+
+  if (!userId) redirect("/sign-in");
+
+  const roles = (sessionClaims?.metadata as string[]) ?? [];
+
+  if (!roles.includes("admin")) redirect("/unauthorized");
+
+  return { userId, roles };
+}
