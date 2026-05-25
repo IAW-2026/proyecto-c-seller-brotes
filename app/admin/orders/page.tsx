@@ -29,6 +29,7 @@ export default async function AdminOrdersPage({
   const totalPages = Math.ceil(total / ORDERS_PER_PAGE);
 
   const statusLabels: Record<string, string> = {
+    pendiente: "Pendiente",
     recibida: "Recibida",
     en_preparacion: "En preparación",
     listo: "Listo",

@@ -6,12 +6,15 @@ datasource db {
   provider = "postgresql"
 }
 
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
 enum ProductStatus {
   active
   inactive
 }
 
 enum IncomingOrderStatus {
+  pendiente
   recibida
   en_preparacion
   listo
@@ -28,12 +31,23 @@ enum ProductCategory {
   macetas_y_kits
 }
 
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model City {
+  postalCode Int      @id @map("postal_code")
+  name       String
+  sellers    Seller[]
+
+  @@map("cities")
+}
+
 model Seller {
   id             Int             @id @default(autoincrement())
   clerkUserId    String          @unique @map("clerk_user_id")
   name           String
   email          String
-  city           String?
+  cityPostalCode Int?            @map("city_postal_code")
+  city           City?           @relation(fields: [cityPostalCode], references: [postalCode])
   address        String?
   iconUrl        String?         @map("icon_url")
   products       Product[]
@@ -43,17 +57,19 @@ model Seller {
 }
 
 model Product {
-  id          Int           @id @default(autoincrement())
-  sellerId    Int           @map("seller_id")
-  seller      Seller        @relation(fields: [sellerId], references: [id])
-  name        String
-  description String?
-  category    ProductCategory
-  price       Float
-  stock       Int           @default(0)
-  imageUrl    String?       @map("image_url")
-  status      ProductStatus @default(active)
-  createdAt   DateTime      @default(now()) @map("created_at")
+  id                 Int                 @id @default(autoincrement())
+  sellerId           Int                 @map("seller_id")
+  seller             Seller              @relation(fields: [sellerId], references: [id])
+  name               String
+  description        String?
+  category           ProductCategory
+  price              Float
+  stockAvailable     Int                 @default(0) @map("stock_available")
+  stockReserved      Int                 @default(0) @map("stock_reserved")
+  imageUrl           String?             @map("image_url")
+  status             ProductStatus       @default(active)
+  createdAt          DateTime            @default(now()) @map("created_at")
+  incomingOrderItems IncomingOrderItem[]
 
   @@map("products")
 }
@@ -65,7 +81,7 @@ model IncomingOrder {
   buyerOrderId String              @map("buyer_order_id")
   buyerId      String              @map("buyer_id")
   total        Float
-  status       IncomingOrderStatus @default(recibida)
+  status       IncomingOrderStatus @default(pendiente)
   createdAt    DateTime            @default(now()) @map("created_at")
   items        IncomingOrderItem[]
 
@@ -76,7 +92,8 @@ model IncomingOrderItem {
   id                  Int           @id @default(autoincrement())
   incomingOrderId     Int           @map("incoming_order_id")
   incomingOrder       IncomingOrder @relation(fields: [incomingOrderId], references: [id])
-  productId           String        @map("product_id")
+  productId           Int           @map("product_id")
+  product             Product       @relation(fields: [productId], references: [id])
   productNameSnapshot String        @map("product_name_snapshot")
   unitPriceSnapshot   Float         @map("unit_price_snapshot")
   quantity            Int

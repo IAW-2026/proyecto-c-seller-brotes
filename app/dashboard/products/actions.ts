@@ -22,10 +22,10 @@ export async function createProduct(formData: FormData) {
   const description = formData.get("description") as string;
   const category = formData.get("category") as ProductCategory;
   const price = parseFloat(formData.get("price") as string);
-  const stock = parseInt(formData.get("stock") as string);
+  const stockAvailable = parseInt(formData.get("stock") as string);
   const imageUrl = formData.get("imageUrl") as string;
 
-  if (!name || !category || isNaN(price) || isNaN(stock)) {
+  if (!name || !category || isNaN(price) || isNaN(stockAvailable)) {
     throw new Error("Faltan campos obligatorios");
   }
 
@@ -36,7 +36,7 @@ export async function createProduct(formData: FormData) {
       description,
       category,
       price,
-      stock,
+      stockAvailable,
       imageUrl: imageUrl || null,
       status: ProductStatus.active,
     },
@@ -58,10 +58,10 @@ export async function updateProduct(id: number, formData: FormData) {
   const name = formData.get("name") as string;
   const description = formData.get("description") as string; const category = formData.get("category") as ProductCategory;
   const price = parseFloat(formData.get("price") as string);
-  const stock = parseInt(formData.get("stock") as string);
+  const stockAvailable  = parseInt(formData.get("stock") as string);
   const imageUrl = formData.get("imageUrl") as string;
 
-  if (!name || !category || isNaN(price) || isNaN(stock)) {
+  if (!name || !category || isNaN(price) || isNaN(stockAvailable )) {
     throw new Error("Faltan campos obligatorios");
   }
 
@@ -72,7 +72,7 @@ export async function updateProduct(id: number, formData: FormData) {
       description,
       category,
       price,
-      stock,
+      stockAvailable ,
       imageUrl: imageUrl || null,
     },
   });

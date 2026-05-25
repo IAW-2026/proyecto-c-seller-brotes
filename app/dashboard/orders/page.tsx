@@ -42,6 +42,7 @@ export default async function OrdersPage({
   const totalPages = Math.ceil(total / ORDERS_PER_PAGE);
 
   const statusLabels: Record<string, string> = {
+    pendiente: "Pendiente",
     recibida: "Recibida",
     en_preparacion: "En preparación",
     listo: "Listo",
@@ -49,6 +50,7 @@ export default async function OrdersPage({
   };
 
   const statusColors: Record<string, string> = {
+    pendiente: "bg-orange-100 text-orange-800",
     recibida: "bg-blue-100 text-blue-800",
     en_preparacion: "bg-yellow-100 text-yellow-800",
     listo: "bg-green-100 text-green-800",

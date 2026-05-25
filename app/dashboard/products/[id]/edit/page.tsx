@@ -121,7 +121,7 @@ export default async function EditProductPage({
               type="number"
               min="0"
               required
-              defaultValue={product.stock}
+              defaultValue={product.stockAvailable}
               className="border border-[var(--color-gris-piedra)] rounded px-3 py-2"
             />
           </div>

@@ -29,6 +29,7 @@ export default async function OrderDetailPage({
   if (!order) notFound();
 
   const statusLabels: Record<string, string> = {
+    pendiente: "Pendiente",
     recibida: "Recibida",
     en_preparacion: "En preparación",
     listo: "Listo",
@@ -36,6 +37,7 @@ export default async function OrderDetailPage({
   };
 
   const nextStatus: Record<string, IncomingOrderStatus | null> = {
+    pendiente: IncomingOrderStatus.recibida,
     recibida: IncomingOrderStatus.en_preparacion,
     en_preparacion: IncomingOrderStatus.listo,
     listo: IncomingOrderStatus.entregada,
@@ -43,6 +45,7 @@ export default async function OrderDetailPage({
   };
 
   const nextStatusLabel: Record<string, string> = {
+    pendiente: "Marcar como recibida",
     recibida: "Marcar en preparación",
     en_preparacion: "Marcar como listo",
     listo: "Marcar como entregada",

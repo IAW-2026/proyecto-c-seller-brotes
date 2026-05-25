@@ -8,10 +8,10 @@ export default async function AdminReportsPage() {
 
   const lowStockProducts = await prisma.product.findMany({
     where: {
-      stock: { lte: LOW_STOCK_THRESHOLD },
+      stockAvailable: { lte: LOW_STOCK_THRESHOLD },
       status: "active",
     },
-    orderBy: { stock: "asc" },
+    orderBy: { stockAvailable: "asc" },
     include: { seller: true },
   });
 
@@ -57,12 +57,12 @@ export default async function AdminReportsPage() {
                   <td className="px-4 py-3">
                     <span
                       className={`font-semibold ${
-                        product.stock === 0
+                        product.stockAvailable  === 0
                           ? "text-red-600"
                           : "text-[var(--color-terracota)]"
                       }`}
                     >
-                      {product.stock === 0 ? "Sin stock" : product.stock}
+                      {product.stockAvailable  === 0 ? "Sin stock" : product.stockAvailable }
                     </span>
                   </td>
                 </tr>
