@@ -9,7 +9,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { seller_id: string; id: string } }
+  { params }: { params: Promise<{ seller_id: string; id: string }> }
 ) {
   const authError = validateServiceKey(req);
   if (authError) return authError;
