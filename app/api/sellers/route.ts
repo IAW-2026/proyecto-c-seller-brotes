@@ -1,0 +1,33 @@
+// GET /api/sellers
+// Lo llama Buyer App para listar los vendedores disponibles. Devuelve nombre, ciudad, dirección y 
+//     cuántos productos activos tiene cada seller. 
+// Buyer lo usa, por ejemplo, para mostrar una página de "vendedores" o filtrar el catálogo por tienda.
+
+import { NextRequest, NextResponse } from "next/server";
+import { validateServiceKey } from "@/lib/auth-service";
+import { prisma } from "@/lib/prisma";
+
+export async function GET(req: NextRequest) {
+  const authError = validateServiceKey(req);
+  if (authError) return authError;
+
+  const sellers = await prisma.seller.findMany({
+    include: {
+      city: true,
+      _count: { select: { products: { where: { status: "active" } } } },
+    },
+    orderBy: { name: "asc" },
+  });
+
+  return NextResponse.json({
+    sellers: sellers.map((s) => ({
+      id: s.id,
+      name: s.name,
+      email: s.email,
+      city: s.city?.name ?? null,
+      address: s.address ?? null,
+      icon_url: s.iconUrl ?? null,
+      products_count: s._count.products,
+    })),
+  });
+}
