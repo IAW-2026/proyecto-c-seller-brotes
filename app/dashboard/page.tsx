@@ -86,11 +86,20 @@ export default async function DashboardPage() {
 
   return (
     <div className="p-8 flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--color-verde-profundo)]">
-          Bienvenida, {seller.name}
-        </h1>
-        <p className="text-gray-500">Panel de vendedor</p>
+      {/* Encabezado con botón de perfil */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-[var(--color-verde-profundo)]">
+            Bienvenida, {seller.name}
+          </h1>
+          <p className="text-gray-500">Panel de vendedor</p>
+        </div>
+        <a
+          href="/dashboard/profile"
+          className="flex items-center gap-2 text-sm font-medium text-[var(--color-verde-bosque)] border border-[var(--color-verde-bosque)] rounded-lg px-4 py-2 hover:bg-[var(--color-verde-bosque)] hover:text-white transition-colors"
+        >
+          👤 Editar perfil
+        </a>
       </div>
 
       {/* Cards resumen */}
