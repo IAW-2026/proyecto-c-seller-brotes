@@ -1,10 +1,23 @@
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 import UserMenu from "@/components/UserMenu";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { userId } = await auth();
+
+  const seller = await prisma.seller.findUnique({
+    where: { clerkUserId: userId! },
+  });
+
+  if (seller?.status === "inactive") {
+    redirect("/account-disabled");
+  }
+
   return (
     <div className="flex min-h-screen">
       <aside className="w-64 bg-[var(--color-verde-bosque)] text-white flex flex-col p-6 gap-6">
