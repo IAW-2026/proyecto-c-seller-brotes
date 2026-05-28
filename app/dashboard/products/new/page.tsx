@@ -8,7 +8,7 @@ export default async function NewProductPage() {
       <h1 className="text-2xl font-bold text-[var(--color-verde-profundo)]">
         Nuevo producto
       </h1>
-      <form action={createProduct} className="flex flex-col gap-4 bg-white p-6 rounded shadow">
+      <form action={createProduct} className="flex flex-col gap-4 bg-white p-6 rounded shadow" encType="multipart/form-data">
         <div className="flex flex-col gap-1">
           <label htmlFor="name" className="text-sm font-medium">
             Nombre *
@@ -82,13 +82,14 @@ export default async function NewProductPage() {
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="imageUrl" className="text-sm font-medium">
-            URL de imagen
+          <label htmlFor="imagen" className="text-sm font-medium">
+            Imagen del producto
           </label>
           <input
-            id="imageUrl"
-            name="imageUrl"
-            type="url"
+            id="imagen"
+            name="imagen"
+            type="file"
+            accept="image/*"
             className="border border-[var(--color-gris-piedra)] rounded px-3 py-2"
           />
         </div>

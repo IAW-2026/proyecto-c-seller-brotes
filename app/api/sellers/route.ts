@@ -12,6 +12,7 @@ export async function GET(req: NextRequest) {
   if (authError) return authError;
 
   const sellers = await prisma.seller.findMany({
+    where: { status: "active" },
     include: {
       city: true,
       _count: { select: { products: { where: { status: "active" } } } },

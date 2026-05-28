@@ -7,6 +7,7 @@ import { getOrCreateSeller } from "@/lib/seller";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { ProductStatus, ProductCategory } from "@prisma/client";
+import cloudinary from "@/lib/cloudinary";
 
 export async function createProduct(formData: FormData) {
   await requireSeller();
@@ -23,7 +24,19 @@ export async function createProduct(formData: FormData) {
   const category = formData.get("category") as ProductCategory;
   const price = parseFloat(formData.get("price") as string);
   const stockAvailable = parseInt(formData.get("stock") as string);
-  const imageUrl = formData.get("imageUrl") as string;
+  
+  const imageFile = formData.get("imagen") as File | null;
+  let imageUrl: string | null = null;
+
+  if (imageFile && imageFile.size > 0) {
+  const arrayBuffer = await imageFile.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const base64 = `data:${imageFile.type};base64,${buffer.toString("base64")}`;
+  const result = await cloudinary.uploader.upload(base64, {
+    folder: "brotes/products",
+  });
+  imageUrl = result.secure_url;
+}
 
   if (!name || !category || isNaN(price) || isNaN(stockAvailable)) {
     throw new Error("Faltan campos obligatorios");
@@ -59,7 +72,28 @@ export async function updateProduct(id: number, formData: FormData) {
   const description = formData.get("description") as string; const category = formData.get("category") as ProductCategory;
   const price = parseFloat(formData.get("price") as string);
   const stockAvailable  = parseInt(formData.get("stock") as string);
-  const imageUrl = formData.get("imageUrl") as string;
+  const imageFile = formData.get("imagen") as File | null;
+  let imageUrl: string | null = null;
+
+  if (imageFile && imageFile.size > 0) {
+    const arrayBuffer = await imageFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64 = `data:${imageFile.type};base64,${buffer.toString("base64")}`;
+    const result = await cloudinary.uploader.upload(base64, {
+      folder: "brotes/products",
+    });
+    imageUrl = result.secure_url;
+  }
+
+  if (imageFile && imageFile.size > 0) {
+    const arrayBuffer = await imageFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64 = `data:${imageFile.type};base64,${buffer.toString("base64")}`;
+    const result = await cloudinary.uploader.upload(base64, {
+      folder: "brotes/products",
+    });
+    imageUrl = result.secure_url;
+  }
 
   if (!name || !category || isNaN(price) || isNaN(stockAvailable )) {
     throw new Error("Faltan campos obligatorios");

@@ -31,6 +31,11 @@ enum ProductCategory {
   macetas_y_kits
 }
 
+enum SellerStatus {
+  active
+  inactive
+}
+
 // ─── Models ──────────────────────────────────────────────────────────────────
 
 model City {
@@ -50,6 +55,7 @@ model Seller {
   city           City?           @relation(fields: [cityPostalCode], references: [postalCode])
   address        String?
   iconUrl        String?         @map("icon_url")
+  status         SellerStatus    @default(active)
   products       Product[]
   incomingOrders IncomingOrder[]
 

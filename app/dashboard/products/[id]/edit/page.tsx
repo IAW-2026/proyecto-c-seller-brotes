@@ -49,7 +49,7 @@ export default async function EditProductPage({
           </button>
         </form>
       </div>
-      <form action={updateProductWithId} className="flex flex-col gap-4 bg-white p-6 rounded shadow">
+      <form action={updateProductWithId} className="flex flex-col gap-4 bg-white p-6 rounded shadow" encType="multipart/form-data">
         <div className="flex flex-col gap-1">
           <label htmlFor="name" className="text-sm font-medium">
             Nombre *
@@ -127,16 +127,24 @@ export default async function EditProductPage({
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="imageUrl" className="text-sm font-medium">
-            URL de imagen
+          <label htmlFor="imagen" className="text-sm font-medium">
+            Imagen del producto
           </label>
+          {product.imageUrl && (
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-32 h-32 object-cover rounded mb-1"
+            />
+          )}
           <input
-            id="imageUrl"
-            name="imageUrl"
-            type="url"
-            defaultValue={product.imageUrl ?? ""}
+            id="imagen"
+            name="imagen"
+            type="file"
+            accept="image/*"
             className="border border-[var(--color-gris-piedra)] rounded px-3 py-2"
           />
+          <p className="text-xs text-gray-400">Dejá vacío para mantener la imagen actual</p>
         </div>
         <div className="flex gap-4 justify-end">
           <a

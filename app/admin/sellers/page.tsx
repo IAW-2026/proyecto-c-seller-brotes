@@ -1,5 +1,6 @@
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { SellerStatusButton } from "./DeactivateButton";
 
 export default async function AdminSellersPage() {
   await requireAdmin();
@@ -33,6 +34,7 @@ export default async function AdminSellersPage() {
               <th className="text-left px-4 py-3">Email</th>
               <th className="text-left px-4 py-3">Productos</th>
               <th className="text-left px-4 py-3">Pedidos</th>
+              <th className="text-left px-4 py-3">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -43,6 +45,9 @@ export default async function AdminSellersPage() {
                 <td className="px-4 py-3">{seller.email}</td>
                 <td className="px-4 py-3">{seller._count.products}</td>
                 <td className="px-4 py-3">{seller._count.incomingOrders}</td>
+                <td className="px-4 py-3">
+                  <SellerStatusButton sellerId={seller.id} status={seller.status} />
+                </td>
               </tr>
             ))}
           </tbody>
