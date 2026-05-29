@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-
 // app/api/weather/route.ts
 // Llama a OpenWeatherMap desde el servidor para no exponer la API key al cliente.
+
+import { NextRequest, NextResponse } from "next/server";
+import { apiError } from "@/lib/api-error";
 
 const OWM_API_KEY = process.env.OPENWEATHER_API_KEY;
 const OWM_BASE = "https://api.openweathermap.org/data/2.5";
@@ -10,25 +11,19 @@ export async function GET(req: NextRequest) {
   const city = req.nextUrl.searchParams.get("city");
 
   if (!city) {
-    return NextResponse.json({ error: "city param requerido" }, { status: 400 });
+    return apiError("city param requerido", 400);
   }
 
   if (!OWM_API_KEY) {
-    return NextResponse.json(
-      { error: "OPENWEATHER_API_KEY no configurada" },
-      { status: 500 }
-    );
+    return apiError("OPENWEATHER_API_KEY no configurada", 500);
   }
 
   try {
     const url = `${OWM_BASE}/weather?q=${encodeURIComponent(city)},AR&appid=${OWM_API_KEY}&units=metric&lang=es`;
-    const res = await fetch(url, { next: { revalidate: 900 } }); // cache 15 min
+    const res = await fetch(url, { next: { revalidate: 900 } });
 
     if (!res.ok) {
-      return NextResponse.json(
-        { error: "Ciudad no encontrada" },
-        { status: res.status }
-      );
+      return apiError("Ciudad no encontrada", res.status);
     }
 
     const data = await res.json();
@@ -41,10 +36,8 @@ export async function GET(req: NextRequest) {
       icon: data.weather[0].icon,
       humidity: data.main.humidity,
     });
-  } catch {
-    return NextResponse.json(
-      { error: "Error interno al obtener el clima" },
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error("[GET /api/weather]", error);
+    return apiError("Error interno al obtener el clima", 500);
   }
 }

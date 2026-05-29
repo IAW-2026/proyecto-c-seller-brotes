@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateServiceKey } from "@/lib/auth-service";
 import { prisma } from "@/lib/prisma";
+import { apiError } from "@/lib/api-error";
 
 export async function GET(
   req: NextRequest,
@@ -19,31 +20,36 @@ export async function GET(
   const productId = parseInt(id);
 
   if (isNaN(sellerId) || isNaN(productId)) {
-    return NextResponse.json({ error: "Invalid parameters" }, { status: 400 });
+    return apiError("Invalid parameters", 400); 
   }
 
-  const product = await prisma.product.findFirst({
-    where: { id: productId, sellerId },
-  });
+  try {  // ← agregar
+    const product = await prisma.product.findFirst({
+      where: { id: productId, sellerId },
+    });
 
-  if (!product) {
-    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    if (!product) {
+      return apiError("Product not found", 404);
+    }
+
+    return NextResponse.json({
+      id: product.id,
+      seller_id: product.sellerId,
+      name: product.name,
+      description: product.description ?? null,
+      category: product.category,
+      price: { amount: product.price, currency: "ARS" },
+      stock: {
+        available: product.stockAvailable,
+        reserved: product.stockReserved,
+        status: product.stockAvailable > 0 ? "in_stock" : "out_of_stock",
+      },
+      image_url: product.imageUrl ?? null,
+      estado: product.status,
+      created_at: product.createdAt.toISOString(),
+    });
+  } catch (error) {
+    console.error("[GET /api/sellers/:seller_id/products/:id]", error);
+    return apiError("Error al obtener el producto", 500);
   }
-
-  return NextResponse.json({
-    id: product.id,
-    seller_id: product.sellerId,
-    name: product.name,
-    description: product.description ?? null,
-    category: product.category,
-    price: { amount: product.price, currency: "ARS" },
-    stock: {
-      available: product.stockAvailable,
-      reserved: product.stockReserved,
-      status: product.stockAvailable > 0 ? "in_stock" : "out_of_stock",
-    },
-    image_url: product.imageUrl ?? null,
-    estado: product.status,
-    created_at: product.createdAt.toISOString(),
-  });
 }

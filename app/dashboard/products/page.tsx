@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 const PRODUCTS_PER_PAGE = 10;
 
 export default async function ProductsPage({
+  
   searchParams, //los searchParams son los parámetros de la URL
 }: {
   searchParams: Promise<{ search?: string; page?: string }>;
