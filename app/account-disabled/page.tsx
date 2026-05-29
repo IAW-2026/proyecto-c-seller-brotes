@@ -1,6 +1,7 @@
 "use client";
 
 import { useClerk } from "@clerk/nextjs";
+import Image from "next/image";
 
 export default function AccountDisabledPage() {
   const { signOut } = useClerk();
@@ -9,7 +10,13 @@ export default function AccountDisabledPage() {
     <div className="min-h-screen bg-[var(--color-arena)] flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-md p-10 flex flex-col items-center gap-6 text-center">
 
-        <div className="text-6xl animate-pulse-subtle">🌱</div>
+        <Image
+          src="/brotes-logo.png"
+          alt="Brotes"
+          width={120}
+          height={120}
+          className="animate-pulse-subtle"
+        />
 
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-bold text-[var(--color-verde-profundo)]">

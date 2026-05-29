@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // app/api/weather/route.ts
-// Proxy para OpenWeatherMap — mantiene la API key en el servidor.
+// Llama a OpenWeatherMap desde el servidor para no exponer la API key al cliente.
 
 const OWM_API_KEY = process.env.OPENWEATHER_API_KEY;
 const OWM_BASE = "https://api.openweathermap.org/data/2.5";

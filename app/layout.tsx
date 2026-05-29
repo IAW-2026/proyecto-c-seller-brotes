@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Brotes - Seller App",
   description: "Panel de vendedores de Brotes",
-  icons: { icon: "/brotes-logo.png" },
+  icons: { icon: "/icon.png" },
 };
 
 export default function RootLayout({
