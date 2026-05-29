@@ -18,7 +18,11 @@ export async function GET(request: NextRequest) {
       where: { clerkUserId: userId! },
     });
 
-    if (seller?.status === "inactive") {
+    if (!seller) {
+      return NextResponse.redirect(new URL("/onboarding", baseUrl));
+    }
+
+    if (seller.status === "inactive") {
       return NextResponse.redirect(new URL("/account-disabled", baseUrl));
     }
 
