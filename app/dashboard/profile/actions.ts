@@ -26,11 +26,9 @@ export async function updateSellerProfile(
   const seller = await prisma.seller.findUnique({ where: { clerkUserId: userId } })
   if (!seller) return { success: false, error: 'Vendedor no encontrado' }
 
-  const name           = (formData.get('name') as string)?.trim()
-  const address        = (formData.get('address') as string)?.trim() || null
-  const cityPostalCode = formData.get('cityPostalCode')
-    ? Number(formData.get('cityPostalCode'))
-    : null
+  const name     = (formData.get('name') as string)?.trim()
+  const address  = (formData.get('address') as string)?.trim() || null
+  const city     = (formData.get('city') as string)?.trim() || null // ← cambió
   const iconFile = formData.get('icon') as File | null
 
   if (!name) return { success: false, error: 'El nombre es requerido' }
@@ -56,7 +54,7 @@ export async function updateSellerProfile(
 
   await prisma.seller.update({
     where: { id: seller.id },
-    data: { name, address, cityPostalCode, iconUrl },
+    data: { name, address, city, iconUrl }, 
   })
 
   revalidatePath('/dashboard/profile')

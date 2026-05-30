@@ -5,34 +5,20 @@ import { prisma } from "../lib/prisma";
 async function main() {
   console.log("🌱 Iniciando seed...");
 
-  // ─── Ciudades ───────────────────────────────────────────────────────────────
-  await prisma.city.createMany({
-    data: [
-      { postalCode: 1000, name: "Buenos Aires" },
-      { postalCode: 5000, name: "Córdoba" },
-      { postalCode: 3000, name: "Santa Fe" },
-      { postalCode: 7600, name: "Mar del Plata" },
-      { postalCode: 4000, name: "San Miguel de Tucumán" },
-    ],
-    skipDuplicates: true,
-  });
-
-  console.log("✅ Ciudades creadas");
-
   // ─── Seller principal (tu cuenta) ───────────────────────────────────────────
   const seller = await prisma.seller.upsert({
     where: { clerkUserId: "user_3DlMcPLckasFoKzWsooPNyIWakU" },
     update: {
       name: "Vivero La Brote",
       email: "labrote@brotes.com",
-      cityPostalCode: 1000,
+      city: "Buenos Aires",
       address: "Av. Santa Fe 1234, Buenos Aires",
     },
     create: {
       clerkUserId: "user_3DlMcPLckasFoKzWsooPNyIWakU",
       name: "Vivero La Brote",
       email: "labrote@brotes.com",
-      cityPostalCode: 1000,
+      city: "Buenos Aires",
       address: "Av. Santa Fe 1234, Buenos Aires",
     },
   });
@@ -45,14 +31,14 @@ async function main() {
     update: {
       name: "Verde Córdoba",
       email: "verde@cordoba.com",
-      cityPostalCode: 5000,
+      city: "Córdoba",
       address: "Bv. San Juan 567, Córdoba",
     },
     create: {
       clerkUserId: "seed_seller_verde_cordoba",
       name: "Verde Córdoba",
       email: "verde@cordoba.com",
-      cityPostalCode: 5000,
+      city: "Córdoba",
       address: "Bv. San Juan 567, Córdoba",
     },
   });
@@ -62,14 +48,14 @@ async function main() {
     update: {
       name: "Botánica Rosario",
       email: "botanica@rosario.com",
-      cityPostalCode: 3000,
+      city: "Santa Fe",
       address: "Av. Pellegrini 890, Santa Fe",
     },
     create: {
       clerkUserId: "seed_seller_botanica_rosario",
       name: "Botánica Rosario",
       email: "botanica@rosario.com",
-      cityPostalCode: 3000,
+      city: "Santa Fe",
       address: "Av. Pellegrini 890, Santa Fe",
     },
   });
@@ -79,14 +65,14 @@ async function main() {
     update: {
       name: "Plantas del Mar",
       email: "plantas@mardelplata.com",
-      cityPostalCode: 7600,
+      city: "Mar del Plata",
       address: "Diagonal 74 nro 321, Mar del Plata",
     },
     create: {
       clerkUserId: "seed_seller_plantas_mar",
       name: "Plantas del Mar",
       email: "plantas@mardelplata.com",
-      cityPostalCode: 7600,
+      city: "Mar del Plata",
       address: "Diagonal 74 nro 321, Mar del Plata",
     },
   });

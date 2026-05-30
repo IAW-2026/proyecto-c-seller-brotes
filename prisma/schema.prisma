@@ -38,25 +38,16 @@ enum SellerStatus {
 
 // ─── Models ──────────────────────────────────────────────────────────────────
 
-model City {
-  postalCode Int      @id @map("postal_code")
-  name       String
-  sellers    Seller[]
-
-  @@map("cities")
-}
-
 model Seller {
-  id             Int             @id @default(autoincrement())
-  clerkUserId    String          @unique @map("clerk_user_id")
-  name           String
-  email          String
-  cityPostalCode Int?            @map("city_postal_code")
-  city           City?           @relation(fields: [cityPostalCode], references: [postalCode])
-  address        String?
-  iconUrl        String?         @map("icon_url")
-  status         SellerStatus    @default(active)
-  products       Product[]
+  id          Int          @id @default(autoincrement())
+  clerkUserId String       @unique @map("clerk_user_id")
+  name        String
+  email       String
+  city        String?      
+  address     String?
+  iconUrl     String?      @map("icon_url")
+  status      SellerStatus @default(active)
+  products    Product[]
   incomingOrders IncomingOrder[]
 
   @@map("sellers")

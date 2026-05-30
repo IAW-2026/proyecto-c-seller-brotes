@@ -62,7 +62,7 @@ export default async function OnboardingPage() {
           <div>
             <label className="text-sm font-medium text-gray-700">Código postal</label>
             <input
-              name="cityPostalCode"
+              name="city"
               type="number"
               className="mt-1 w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#3d5a3e]"
               placeholder="Ej: 8000"

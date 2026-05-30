@@ -4,21 +4,18 @@ import { useActionState, useRef, useState } from 'react'
 import Image from 'next/image'
 import { updateSellerProfile, type UpdateProfileState } from './actions'
 
-type City = { postalCode: number; name: string }
-
 type Props = {
   seller: {
     name: string
     address: string | null
     iconUrl: string | null
-    cityPostalCode: number | null
+    city: string | null
   }
-  cities: City[]
 }
 
 const initialState: UpdateProfileState = { success: false }
 
-export default function ProfileForm({ seller, cities }: Props) {
+export default function ProfileForm({ seller }: Props) { 
   const [state, formAction, pending] = useActionState(updateSellerProfile, initialState)
   const [previewUrl, setPreviewUrl] = useState<string | null>(seller.iconUrl)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -80,22 +77,17 @@ export default function ProfileForm({ seller, cities }: Props) {
 
       {/* Ciudad */}
       <div className="space-y-1">
-        <label htmlFor="cityPostalCode" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="city" className="block text-sm font-medium text-gray-700">
           Ciudad
         </label>
-        <select
-          id="cityPostalCode"
-          name="cityPostalCode"
-          defaultValue={seller.cityPostalCode ?? ''}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white"
-        >
-          <option value="">Sin especificar</option>
-          {cities.map((city) => (
-            <option key={city.postalCode} value={city.postalCode}>
-              {city.name}
-            </option>
-          ))}
-        </select>
+        <input
+          id="city"
+          name="city"
+          type="text"
+          defaultValue={seller.city ?? ''}
+          placeholder="Ej: Buenos Aires"
+          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+        />
       </div>
 
       {/* Dirección */}

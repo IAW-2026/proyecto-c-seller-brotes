@@ -1,4 +1,3 @@
-// app/onboarding/actions.ts
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
@@ -12,7 +11,7 @@ export async function createSeller(formData: FormData) {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const address = formData.get("address") as string;
-  const cityPostalCode = formData.get("cityPostalCode");
+  const city = formData.get("city") as string;
 
   if (!name || !email) return;
 
@@ -22,7 +21,7 @@ export async function createSeller(formData: FormData) {
       name,
       email,
       address: address || null,
-      cityPostalCode: cityPostalCode ? parseInt(cityPostalCode as string) : null,
+      city: city || null,
     },
   });
 
