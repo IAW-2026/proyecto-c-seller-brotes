@@ -16,7 +16,6 @@ export async function GET(req: NextRequest) {
     const sellers = await prisma.seller.findMany({
       where: { status: "active" },
       include: {
-        city: true,
         _count: { select: { products: { where: { status: "active" } } } },
       },
       orderBy: { name: "asc" },
@@ -27,7 +26,7 @@ export async function GET(req: NextRequest) {
         id: s.id,
         name: s.name,
         email: s.email,
-        city: s.city?.name ?? null,
+        city: s.city ?? null,      // ← directo, sin .name
         address: s.address ?? null,
         icon_url: s.iconUrl ?? null,
         products_count: s._count.products,

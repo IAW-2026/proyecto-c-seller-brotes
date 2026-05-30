@@ -11,7 +11,6 @@ export async function getOrCreateSeller({
 }) {
   const existing = await prisma.seller.findUnique({
     where: { clerkUserId },
-    include: { city: true },
   });
 
   if (existing) return existing;
@@ -22,6 +21,5 @@ export async function getOrCreateSeller({
       name,
       email,
     },
-    include: { city: true },
   });
 }

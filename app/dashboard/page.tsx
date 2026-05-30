@@ -120,7 +120,7 @@ export default async function DashboardPage() {
 
       {/* Widget del clima */}
       {seller.city ? (
-        <WeatherWidget cityName={seller.city.name} />
+        <WeatherWidget cityName={seller.city} />
       ) : (
         <div className="bg-white rounded-lg border border-[var(--color-gris-piedra)] px-4 py-3 text-sm text-gray-500">
           🌿 Completá tu ciudad en{" "}
