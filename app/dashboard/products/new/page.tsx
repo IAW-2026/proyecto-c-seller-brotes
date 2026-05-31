@@ -1,5 +1,6 @@
 import { requireSeller } from "@/lib/auth";
 import { createProduct } from "../actions";
+import { categoryLabels } from "@/lib/constants";
 
 export default async function NewProductPage() {
   await requireSeller();
@@ -32,27 +33,23 @@ export default async function NewProductPage() {
             className="border border-[var(--color-gris-piedra)] rounded px-3 py-2"
           />
         </div>
-        <div className="flex flex-col gap-1"> 
-          <label htmlFor="category" className="text-sm font-medium"> 
-            Categoría * 
+        <div className="flex flex-col gap-1">
+          <label htmlFor="category" className="text-sm font-medium">
+            Categoría *
           </label>
-           <select 
-            id="category" 
-            name="category" 
-            required 
-            className="border border-[var(--color-gris-piedra)] rounded px-3 py-2 bg-white" 
-          > 
-            <option value="">Seleccionar categoría</option> 
-            <option value="suculentas">Suculentas</option> 
-            <option value="plantas_de_interior">Plantas de interior</option> 
-            <option value="aromaticas">Aromáticas</option> 
-            <option value="frutales">Frutales</option> 
-            <option value="cactus">Cactus</option> 
-            <option value="colecciones_raras">Colecciones raras</option> 
-            <option value="macetas_y_kits">Macetas & kits</option> 
-          </select> 
+          <select
+            id="category"
+            name="category"
+            required
+            className="border border-[var(--color-gris-piedra)] rounded px-3 py-2 bg-white"
+          >
+            <option value="">Seleccionar categoría</option>
+            {Object.entries(categoryLabels).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex flex-col gap-1 flex-1">
             <label htmlFor="price" className="text-sm font-medium">
               Precio *

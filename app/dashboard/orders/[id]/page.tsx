@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { updateOrderStatus } from "../actions";
 import { IncomingOrderStatus } from "@prisma/client";
+import { statusLabels } from "@/lib/constants";
 
 export default async function OrderDetailPage({
   params,
@@ -27,14 +28,6 @@ export default async function OrderDetailPage({
   });
 
   if (!order) notFound();
-
-  const statusLabels: Record<string, string> = {
-    pendiente: "Pendiente",
-    recibida: "Recibida",
-    en_preparacion: "En preparación",
-    listo: "Listo",
-    entregada: "Entregada",
-  };
 
   const nextStatus: Record<string, IncomingOrderStatus | null> = {
     pendiente: IncomingOrderStatus.recibida,
@@ -83,28 +76,30 @@ export default async function OrderDetailPage({
         <h2 className="font-semibold text-[var(--color-verde-profundo)]">
           Productos
         </h2>
-        <table className="w-full text-sm">
-          <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
-            <tr>
-              <th className="text-left px-3 py-2">Producto</th>
-              <th className="text-left px-3 py-2">Precio unitario</th>
-              <th className="text-left px-3 py-2">Cantidad</th>
-              <th className="text-left px-3 py-2">Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {order.items.map((item) => (
-              <tr key={item.id} className="border-t border-[var(--color-gris-piedra)]">
-                <td className="px-3 py-2">{item.productNameSnapshot}</td>
-                <td className="px-3 py-2">${item.unitPriceSnapshot}</td>
-                <td className="px-3 py-2">{item.quantity}</td>
-                <td className="px-3 py-2">
-                  ${item.unitPriceSnapshot * item.quantity}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[400px]">
+            <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
+              <tr>
+                <th className="text-left px-3 py-2">Producto</th>
+                <th className="text-left px-3 py-2">Precio unitario</th>
+                <th className="text-left px-3 py-2">Cantidad</th>
+                <th className="text-left px-3 py-2">Subtotal</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {order.items.map((item) => (
+                <tr key={item.id} className="border-t border-[var(--color-gris-piedra)]">
+                  <td className="px-3 py-2">{item.productNameSnapshot}</td>
+                  <td className="px-3 py-2">${item.unitPriceSnapshot}</td>
+                  <td className="px-3 py-2">{item.quantity}</td>
+                  <td className="px-3 py-2">
+                    ${item.unitPriceSnapshot * item.quantity}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <div className="flex justify-end font-semibold text-[var(--color-verde-profundo)]">
           Total: ${order.total}
         </div>

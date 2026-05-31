@@ -3,16 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { ProductCategory, ProductStatus } from "@prisma/client";
 import { ProductFilters } from "./ProductFilters";
 import { Suspense } from "react";
-
-const categoryLabels: Record<ProductCategory, string> = {
-  suculentas: "Suculentas",
-  plantas_de_interior: "Plantas de interior",
-  aromaticas: "Aromáticas",
-  frutales: "Frutales",
-  cactus: "Cactus",
-  colecciones_raras: "Colecciones raras",
-  macetas_y_kits: "Macetas y kits",
-};
+import { categoryLabels } from "@/lib/constants";
 
 export default async function AdminProductsPage({
   searchParams,

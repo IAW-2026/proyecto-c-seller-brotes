@@ -2,11 +2,12 @@ import { requireSeller } from "@/lib/auth";
 import { getOrCreateSeller } from "@/lib/seller";
 import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { categoryLabels } from "@/lib/constants";
 
 const PRODUCTS_PER_PAGE = 10;
 
 export default async function ProductsPage({
-  searchParams, //los searchParams son los parámetros de la URL
+  searchParams,
 }: {
   searchParams: Promise<{ search?: string; page?: string }>;
 }) {
@@ -19,12 +20,10 @@ export default async function ProductsPage({
     email: user!.emailAddresses[0].emailAddress,
   });
 
-  //lee los parámetros de la URL. El skip calcula cuántos productos saltar según la página actual.
   const { search, page } = await searchParams;
   const currentPage = Number(page) || 1;
   const skip = (currentPage - 1) * PRODUCTS_PER_PAGE;
 
-  //filtro para la query de Prisma (por sellerId, para solo ver los productos del vendedor)
   const where = {
     sellerId: seller.id,
     ...(search
@@ -32,7 +31,6 @@ export default async function ProductsPage({
       : {}),
   };
 
-  //Hace dos queries a la BD a la vez. findMany trae los productos de esa página, count cuenta el total para calcular cuántas páginas hay.
   const [products, total] = await Promise.all([
     prisma.product.findMany({
       where,
@@ -44,16 +42,6 @@ export default async function ProductsPage({
   ]);
 
   const totalPages = Math.ceil(total / PRODUCTS_PER_PAGE);
-
-  const categoryLabels: Record<string, string> = {
-    suculentas: "Suculentas",
-    plantas_de_interior: "Plantas de interior",
-    aromaticas: "Aromáticas",
-    frutales: "Frutales",
-    cactus: "Cactus",
-    colecciones_raras: "Colecciones raras",
-    macetas_y_kits: "Macetas & kits",
-  };
 
   return (
     <div className="flex flex-col gap-6">

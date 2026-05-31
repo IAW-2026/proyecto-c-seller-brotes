@@ -3,22 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { IncomingOrderStatus } from "@prisma/client";
 import { OrderFilters } from "./OrderFilters";
 import { Suspense } from "react";
-
-const statusLabels: Record<IncomingOrderStatus, string> = {
-  pendiente: "Pendiente",
-  recibida: "Recibida",
-  en_preparacion: "En preparación",
-  listo: "Listo",
-  entregada: "Entregada",
-};
-
-const statusColors: Record<IncomingOrderStatus, string> = {
-  pendiente: "bg-orange-100 text-orange-800",
-  recibida: "bg-blue-100 text-blue-800",
-  en_preparacion: "bg-yellow-100 text-yellow-800",
-  listo: "bg-green-100 text-green-800",
-  entregada: "bg-gray-100 text-gray-800",
-};
+import { statusLabels, statusColors } from "@/lib/constants";
 
 export default async function AdminOrdersPage({
   searchParams,

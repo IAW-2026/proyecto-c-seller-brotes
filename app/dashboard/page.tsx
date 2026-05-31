@@ -3,6 +3,7 @@ import { getOrCreateSeller } from "@/lib/seller";
 import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import WeatherWidget from "@/components/WeatherWidget";
+import { statusLabels, statusColors } from "@/lib/constants";
 
 export default async function DashboardPage() {
   await requireSeller();
@@ -67,22 +68,6 @@ export default async function DashboardPage() {
       accent: outOfStockProducts > 0 ? "#e57373" : "var(--color-gris-piedra)",
     },
   ];
-
-  const statusLabels: Record<string, string> = {
-    pendiente: "Pendiente",
-    recibida: "Recibida",
-    en_preparacion: "En preparación",
-    listo: "Listo",
-    entregada: "Entregada",
-  };
-
-  const statusColors: Record<string, string> = {
-    pendiente: "bg-yellow-100 text-yellow-800",
-    recibida: "bg-blue-100 text-blue-800",
-    en_preparacion: "bg-orange-100 text-orange-800",
-    listo: "bg-green-100 text-green-800",
-    entregada: "bg-gray-100 text-gray-600",
-  };
 
   return (
     <div className="flex flex-col gap-6">

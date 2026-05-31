@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { updateProduct, toggleProductStatus } from "../../actions";
 import { ProductStatus } from "@prisma/client";
+import { categoryLabels } from "@/lib/constants";
 
 export default async function EditProductPage({
   params,
@@ -86,13 +87,9 @@ export default async function EditProductPage({
             defaultValue={product.category}
             className="border border-[var(--color-gris-piedra)] rounded px-3 py-2 bg-white"
           >
-            <option value="suculentas">Suculentas</option>
-            <option value="plantas_de_interior">Plantas de interior</option>
-            <option value="aromaticas">Aromáticas</option>
-            <option value="frutales">Frutales</option>
-            <option value="cactus">Cactus</option>
-            <option value="colecciones_raras">Colecciones raras</option>
-            <option value="macetas_y_kits">Macetas & kits</option>
+            {Object.entries(categoryLabels).map(([value, label]) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
           </select>
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
