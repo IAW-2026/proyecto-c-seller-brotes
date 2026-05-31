@@ -3,6 +3,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { clerkClient } from "@clerk/nextjs/server";
+import { apiError } from "@/lib/api-error";
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -14,7 +15,7 @@ export async function POST(req: Request) {
   const svix_signature = headerPayload.get("svix-signature");
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response("Missing svix headers", { status: 400 });
+    return apiError("Missing svix headers", 400);
   }
 
   const payload = await req.json();
@@ -30,7 +31,7 @@ export async function POST(req: Request) {
       "svix-signature": svix_signature,
     }) as WebhookEvent;
   } catch (err) {
-    return new Response("Invalid webhook signature", { status: 400 });
+    return apiError("Invalid webhook signature", 400);
   }
 
   if (evt.type === "user.created") {

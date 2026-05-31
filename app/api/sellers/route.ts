@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
         id: s.id,
         name: s.name,
         email: s.email,
-        city: s.city ?? null,      // ← directo, sin .name
+        city: s.city ?? null,    
         address: s.address ?? null,
         icon_url: s.iconUrl ?? null,
         products_count: s._count.products,

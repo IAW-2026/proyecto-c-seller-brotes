@@ -34,6 +34,19 @@ export async function POST(req: NextRequest) {
     return apiError("Missing required fields", 400);  
   }
 
+  if (!items) {
+    return apiError("Items are required", 400);
+  }
+
+  for (const item of items) {
+    if (!Number.isInteger(item.product_id) || item.product_id <= 0) {
+      return apiError("Invalid product_id", 400);
+    }
+    if (!Number.isInteger(item.quantity) || item.quantity <= 0) {
+      return apiError("Quantity must be a positive integer", 400);
+    }
+  }
+
   try {
     const productIds = items.map((i) => i.product_id);
     const products = await prisma.product.findMany({

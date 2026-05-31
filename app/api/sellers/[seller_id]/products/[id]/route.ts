@@ -23,7 +23,7 @@ export async function GET(
     return apiError("Invalid parameters", 400); 
   }
 
-  try {  // ← agregar
+  try { 
     const product = await prisma.product.findFirst({
       where: { id: productId, sellerId },
     });
