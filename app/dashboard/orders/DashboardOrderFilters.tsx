@@ -2,9 +2,16 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useTransition } from "react";
-import { statusLabels } from "@/lib/constants";
 
-export function OrderFilters() {
+const statusLabels: Record<string, string> = {
+  pendiente: "Pendiente",
+  recibida: "Recibida",
+  en_preparacion: "En preparación",
+  listo: "Listo",
+  entregada: "Entregada",
+};
+
+export function DashboardOrderFilters() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -28,10 +35,10 @@ export function OrderFilters() {
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Búsqueda */}
-      <div className="relative flex-1">
+      {/* Búsqueda por número de pedido */}
+      <div className="relative">
         <label htmlFor="search-orders" className="sr-only">
-          Buscar por nombre de seller
+          Buscar por número de pedido
         </label>
         <span
           className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-gris-piedra)] pointer-events-none"
@@ -44,7 +51,7 @@ export function OrderFilters() {
         <input
           id="search-orders"
           type="text"
-          placeholder="Buscar por nombre de seller..."
+          placeholder="Buscar por número de pedido..."
           defaultValue={currentSearch}
           onChange={(e) => updateParams("search", e.target.value)}
           className="w-full pl-9 pr-4 py-2 rounded-lg border border-[var(--color-gris-piedra)] bg-white text-sm text-[var(--color-verde-profundo)] placeholder:text-[var(--color-gris-piedra)] focus:outline-none focus:ring-2 focus:ring-[var(--color-verde-suave)] transition"
@@ -57,7 +64,7 @@ export function OrderFilters() {
         )}
       </div>
 
-      {/* Filtro estado */}
+      {/* Filtro por estado */}
       <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por estado">
         <button
           onClick={() => updateParams("status", "")}

@@ -85,16 +85,6 @@ export async function updateProduct(id: number, formData: FormData) {
     imageUrl = result.secure_url;
   }
 
-  if (imageFile && imageFile.size > 0) {
-    const arrayBuffer = await imageFile.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const base64 = `data:${imageFile.type};base64,${buffer.toString("base64")}`;
-    const result = await cloudinary.uploader.upload(base64, {
-      folder: "brotes/products",
-    });
-    imageUrl = result.secure_url;
-  }
-
   if (!name || !category || isNaN(price) || isNaN(stockAvailable )) {
     throw new Error("Faltan campos obligatorios");
   }

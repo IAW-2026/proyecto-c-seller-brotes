@@ -3,6 +3,8 @@ import { getOrCreateSeller } from "@/lib/seller";
 import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { categoryLabels } from "@/lib/constants";
+import { ProductFilters } from "./ProductFilters";
+import { Suspense } from "react";
 
 const PRODUCTS_PER_PAGE = 10;
 
@@ -57,77 +59,83 @@ export default async function ProductsPage({
         </a>
       </div>
 
-      <form method="GET">
-        <input
-          type="text"
-          name="search"
-          defaultValue={search}
-          placeholder="Buscar productos..."
-          className="w-full border border-[var(--color-gris-piedra)] rounded px-4 py-2 bg-white"
-        />
-      </form>
+      <Suspense>
+        <ProductFilters />
+      </Suspense>
 
       {products.length === 0 ? (
-        <p className="text-[var(--color-gris-piedra)]">No hay productos.</p>
+        <p className="text-[var(--color-gris-piedra)]">
+          {search ? "No se encontraron productos con ese nombre." : "No hay productos."}
+        </p>
       ) : (
-        <div className="overflow-x-auto rounded shadow">
-          <table className="w-full bg-white text-sm min-w-[560px]">
-            <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
-              <tr>
-                <th className="text-left px-4 py-3">Nombre</th>
-                <th className="text-left px-4 py-3">Categoría</th>
-                <th className="text-left px-4 py-3">Precio</th>
-                <th className="text-left px-4 py-3">Stock</th>
-                <th className="text-left px-4 py-3">Estado</th>
-                <th className="text-left px-4 py-3">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product.id} className="border-t border-[var(--color-gris-piedra)]">
-                  <td className="px-4 py-3">{product.name}</td>
-                  <td className="px-4 py-3">{categoryLabels[product.category]}</td>
-                  <td className="px-4 py-3">${product.price}</td>
-                  <td className="px-4 py-3">{product.stockAvailable}</td>
-                  <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded text-xs font-medium ${
-                      product.status === "active"
-                        ? "bg-[var(--color-verde-brote)] text-[var(--color-verde-profundo)]"
-                        : "bg-[var(--color-gris-piedra)] text-white"
-                    }`}>
-                      {product.status === "active" ? "Activo" : "Inactivo"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <a
-                      href={`/dashboard/products/${product.id}/edit`}
-                      className="text-[var(--color-verde-bosque)] hover:underline"
-                    >
-                      Editar
-                    </a>
-                  </td>
+        <>
+          <p className="text-xs text-[var(--color-gris-piedra)] -mt-3">
+            {total} resultado{total !== 1 ? "s" : ""}
+          </p>
+          <div className="overflow-x-auto rounded shadow">
+            <table className="w-full bg-white text-sm min-w-[560px]">
+              <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
+                <tr>
+                  <th scope="col" className="text-left px-4 py-3">Nombre</th>
+                  <th scope="col" className="text-left px-4 py-3">Categoría</th>
+                  <th scope="col" className="text-left px-4 py-3">Precio</th>
+                  <th scope="col" className="text-left px-4 py-3">Stock</th>
+                  <th scope="col" className="text-left px-4 py-3">Estado</th>
+                  <th scope="col" className="text-left px-4 py-3">Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {products.map((product) => (
+                  <tr key={product.id} className="border-t border-[var(--color-gris-piedra)]">
+                    <td className="px-4 py-3">{product.name}</td>
+                    <td className="px-4 py-3">{categoryLabels[product.category]}</td>
+                    <td className="px-4 py-3">${product.price}</td>
+                    <td className="px-4 py-3">{product.stockAvailable}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        product.status === "active"
+                          ? "bg-[var(--color-verde-brote)] text-[var(--color-verde-profundo)]"
+                          : "bg-[var(--color-gris-piedra)] text-white"
+                      }`}>
+                        {product.status === "active" ? "Activo" : "Inactivo"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <a
+                        href={`/dashboard/products/${product.id}/edit`}
+                        aria-label={`Editar producto ${product.name}`}
+                        className="text-[var(--color-verde-bosque)] hover:underline"
+                      >
+                        Editar
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
-      <div className="flex gap-2 justify-center">
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-          <a
-            key={p}
-            href={`?page=${p}${search ? `&search=${search}` : ""}`}
-            className={`px-3 py-1 rounded ${
-              p === currentPage
-                ? "bg-[var(--color-verde-bosque)] text-white"
-                : "bg-white border border-[var(--color-gris-piedra)]"
-            }`}
-          >
-            {p}
-          </a>
-        ))}
-      </div>
+      {totalPages > 1 && (
+        <nav aria-label="Paginación" className="flex gap-2 justify-center">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <a
+              key={p}
+              href={`?page=${p}${search ? `&search=${search}` : ""}`}
+              aria-current={p === currentPage ? "page" : undefined}
+              aria-label={`Página ${p}`}
+              className={`px-3 py-1 rounded ${
+                p === currentPage
+                  ? "bg-[var(--color-verde-bosque)] text-white"
+                  : "bg-white border border-[var(--color-gris-piedra)]"
+              }`}
+            >
+              {p}
+            </a>
+          ))}
+        </nav>
+      )}
     </div>
   );
 }

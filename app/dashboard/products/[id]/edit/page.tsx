@@ -152,6 +152,7 @@ export default async function EditProductPage({
           </a>
           <button
             type="submit"
+            aria-label={product.status === ProductStatus.active ? "Desactivar producto" : "Activar producto"}
             className="px-4 py-2 bg-[var(--color-verde-bosque)] text-white rounded hover:bg-[var(--color-verde-hoja)]"
           >
             Guardar cambios

@@ -21,7 +21,7 @@ export default function AdminLayout({
             Panel Admin
           </span>
         </div>
-        <nav className="flex flex-col gap-2">
+        <nav aria-label="Navegación admin" className="flex flex-col gap-2">
           <a href="/admin" className="px-4 py-2 rounded hover:bg-[var(--color-verde-bosque)]">Inicio</a>
           <a href="/admin/sellers" className="px-4 py-2 rounded hover:bg-[var(--color-verde-bosque)]">Vendedores</a>
           <a href="/admin/products" className="px-4 py-2 rounded hover:bg-[var(--color-verde-bosque)]">Productos</a>

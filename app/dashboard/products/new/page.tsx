@@ -19,6 +19,7 @@ export default async function NewProductPage() {
             name="name"
             type="text"
             required
+            aria-required="true"
             className="border border-[var(--color-gris-piedra)] rounded px-3 py-2"
           />
         </div>
@@ -41,6 +42,7 @@ export default async function NewProductPage() {
             id="category"
             name="category"
             required
+            aria-required="true"
             className="border border-[var(--color-gris-piedra)] rounded px-3 py-2 bg-white"
           >
             <option value="">Seleccionar categoría</option>
@@ -61,6 +63,7 @@ export default async function NewProductPage() {
               min="0"
               step="0.01"
               required
+              aria-required="true"
               className="border border-[var(--color-gris-piedra)] rounded px-3 py-2"
             />
           </div>
@@ -74,6 +77,7 @@ export default async function NewProductPage() {
               type="number"
               min="0"
               required
+              aria-required="true"
               className="border border-[var(--color-gris-piedra)] rounded px-3 py-2"
             />
           </div>

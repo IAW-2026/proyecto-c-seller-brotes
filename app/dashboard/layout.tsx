@@ -31,7 +31,7 @@ export default async function DashboardLayout({
             priority
           />
         </div>
-        <nav className="flex flex-row md:flex-col gap-2">
+        <nav aria-label="Navegación principal" className="flex flex-row md:flex-col gap-2">
           <a href="/dashboard" className="px-4 py-2 rounded hover:bg-[var(--color-verde-hoja)]">Inicio</a>
           <a href="/dashboard/products" className="px-4 py-2 rounded hover:bg-[var(--color-verde-hoja)]">Mis productos</a>
           <a href="/dashboard/orders" className="px-4 py-2 rounded hover:bg-[var(--color-verde-hoja)]">Pedidos</a>

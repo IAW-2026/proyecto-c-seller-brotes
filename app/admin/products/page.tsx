@@ -72,12 +72,12 @@ export default async function AdminProductsPage({
           <table className="w-full bg-white rounded shadow text-sm">
             <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
               <tr>
-                <th className="text-left px-4 py-3">Nombre</th>
-                <th className="text-left px-4 py-3">Seller</th>
-                <th className="text-left px-4 py-3">Categoría</th>
-                <th className="text-left px-4 py-3">Precio</th>
-                <th className="text-left px-4 py-3">Stock</th>
-                <th className="text-left px-4 py-3">Estado</th>
+                <th scope="col" className="text-left px-4 py-3">Nombre</th>
+                <th scope="col" className="text-left px-4 py-3">Seller</th>
+                <th scope="col" className="text-left px-4 py-3">Categoría</th>
+                <th scope="col" className="text-left px-4 py-3">Precio</th>
+                <th scope="col" className="text-left px-4 py-3">Stock</th>
+                <th scope="col" className="text-left px-4 py-3">Estado</th>
               </tr>
             </thead>
             <tbody>
@@ -105,11 +105,13 @@ export default async function AdminProductsPage({
       )}
 
       {totalPages > 1 && (
-        <div className="flex gap-2 justify-center">
+        <nav aria-label="Paginación" className="flex gap-2 justify-center">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <a
               key={p}
               href={`?page=${p}${search ? `&search=${search}` : ""}${validCategory ? `&category=${validCategory}` : ""}${validStatus ? `&status=${validStatus}` : ""}`}
+              aria-current={p === currentPage ? "page" : undefined}
+              aria-label={`Página ${p}`}
               className={`px-3 py-1 rounded ${
                 p === currentPage
                   ? "bg-[var(--color-verde-bosque)] text-white"
@@ -119,7 +121,7 @@ export default async function AdminProductsPage({
               {p}
             </a>
           ))}
-        </div>
+        </nav>
       )}
     </div>
   );

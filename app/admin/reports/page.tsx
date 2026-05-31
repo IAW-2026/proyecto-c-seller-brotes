@@ -39,10 +39,10 @@ export default async function AdminReportsPage() {
           <table className="w-full text-sm">
             <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
               <tr>
-                <th className="text-left px-4 py-3">Producto</th>
-                <th className="text-left px-4 py-3">Seller</th>
-                <th className="text-left px-4 py-3">Categoría</th>
-                <th className="text-left px-4 py-3">Stock actual</th>
+                <th scope="col" className="text-left px-4 py-3">Producto</th>
+                <th scope="col" className="text-left px-4 py-3">Seller</th>
+                <th scope="col" className="text-left px-4 py-3">Categoría</th>
+                <th scope="col" className="text-left px-4 py-3">Stock actual</th>
               </tr>
             </thead>
             <tbody>
@@ -57,13 +57,16 @@ export default async function AdminReportsPage() {
                   <td className="px-4 py-3">
                     <span
                       className={`font-semibold ${
-                        product.stockAvailable  === 0
+                        product.stockAvailable === 0
                           ? "text-red-600"
                           : "text-[var(--color-terracota)]"
                       }`}
                     >
-                      {product.stockAvailable  === 0 ? "Sin stock" : product.stockAvailable }
+                      {product.stockAvailable === 0 ? "Sin stock" : product.stockAvailable}
                     </span>
+                    {product.stockAvailable > 0 && (
+                      <span className="sr-only"> (stock bajo)</span>
+                    )}
                   </td>
                 </tr>
               ))}

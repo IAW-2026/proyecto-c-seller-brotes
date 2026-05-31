@@ -67,7 +67,10 @@ export default async function OrderDetailPage({
             })}
           </p>
         </div>
-        <span className="px-3 py-1 rounded text-sm font-medium bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
+        <span
+          aria-label={`Estado: ${statusLabels[order.status]}`}
+          className="px-3 py-1 rounded text-sm font-medium bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]"
+        >
           {statusLabels[order.status]}
         </span>
       </div>
@@ -80,10 +83,10 @@ export default async function OrderDetailPage({
           <table className="w-full text-sm min-w-[400px]">
             <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
               <tr>
-                <th className="text-left px-3 py-2">Producto</th>
-                <th className="text-left px-3 py-2">Precio unitario</th>
-                <th className="text-left px-3 py-2">Cantidad</th>
-                <th className="text-left px-3 py-2">Subtotal</th>
+                <th scope="col" className="text-left px-3 py-2">Producto</th>
+                <th scope="col" className="text-left px-3 py-2">Precio unitario</th>
+                <th scope="col" className="text-left px-3 py-2">Cantidad</th>
+                <th scope="col" className="text-left px-3 py-2">Subtotal</th>
               </tr>
             </thead>
             <tbody>
