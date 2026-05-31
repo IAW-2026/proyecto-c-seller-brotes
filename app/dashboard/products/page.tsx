@@ -6,7 +6,6 @@ import { prisma } from "@/lib/prisma";
 const PRODUCTS_PER_PAGE = 10;
 
 export default async function ProductsPage({
-  
   searchParams, //los searchParams son los parámetros de la URL
 }: {
   searchParams: Promise<{ search?: string; page?: string }>;
@@ -83,45 +82,47 @@ export default async function ProductsPage({
       {products.length === 0 ? (
         <p className="text-[var(--color-gris-piedra)]">No hay productos.</p>
       ) : (
-        <table className="w-full bg-white rounded shadow text-sm">
-          <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
-            <tr>
-              <th className="text-left px-4 py-3">Nombre</th>
-              <th className="text-left px-4 py-3">Categoría</th>
-              <th className="text-left px-4 py-3">Precio</th>
-              <th className="text-left px-4 py-3">Stock</th>
-              <th className="text-left px-4 py-3">Estado</th>
-              <th className="text-left px-4 py-3">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product.id} className="border-t border-[var(--color-gris-piedra)]">
-                <td className="px-4 py-3">{product.name}</td>
-                <td className="px-4 py-3"> {categoryLabels[product.category]} </td>
-                <td className="px-4 py-3">${product.price}</td>
-                <td className="px-4 py-3">{product.stockAvailable}</td>
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${
-                    product.status === "active"
-                      ? "bg-[var(--color-verde-brote)] text-[var(--color-verde-profundo)]"
-                      : "bg-[var(--color-gris-piedra)] text-white"
-                  }`}>
-                    {product.status === "active" ? "Activo" : "Inactivo"}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <a
-                    href={`/dashboard/products/${product.id}/edit`}
-                    className="text-[var(--color-verde-bosque)] hover:underline"
-                  >
-                    Editar
-                  </a>
-                </td>
+        <div className="overflow-x-auto rounded shadow">
+          <table className="w-full bg-white text-sm min-w-[560px]">
+            <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
+              <tr>
+                <th className="text-left px-4 py-3">Nombre</th>
+                <th className="text-left px-4 py-3">Categoría</th>
+                <th className="text-left px-4 py-3">Precio</th>
+                <th className="text-left px-4 py-3">Stock</th>
+                <th className="text-left px-4 py-3">Estado</th>
+                <th className="text-left px-4 py-3">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr key={product.id} className="border-t border-[var(--color-gris-piedra)]">
+                  <td className="px-4 py-3">{product.name}</td>
+                  <td className="px-4 py-3">{categoryLabels[product.category]}</td>
+                  <td className="px-4 py-3">${product.price}</td>
+                  <td className="px-4 py-3">{product.stockAvailable}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${
+                      product.status === "active"
+                        ? "bg-[var(--color-verde-brote)] text-[var(--color-verde-profundo)]"
+                        : "bg-[var(--color-gris-piedra)] text-white"
+                    }`}>
+                      {product.status === "active" ? "Activo" : "Inactivo"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <a
+                      href={`/dashboard/products/${product.id}/edit`}
+                      className="text-[var(--color-verde-bosque)] hover:underline"
+                    >
+                      Editar
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <div className="flex gap-2 justify-center">

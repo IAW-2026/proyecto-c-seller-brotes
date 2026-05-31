@@ -85,7 +85,7 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="p-8 flex flex-col gap-6">
+    <div className="flex flex-col gap-6">
       {/* Encabezado con botón de perfil */}
       <div className="flex items-center justify-between">
         <div>

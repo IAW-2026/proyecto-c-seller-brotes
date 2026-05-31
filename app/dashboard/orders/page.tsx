@@ -63,7 +63,7 @@ export default async function OrdersPage({
         Pedidos
       </h1>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         <a
           href="/dashboard/orders"
           className={`px-3 py-1 rounded text-sm ${!status ? "bg-[var(--color-verde-bosque)] text-white" : "bg-white border border-[var(--color-gris-piedra)]"}`}
@@ -84,43 +84,45 @@ export default async function OrdersPage({
       {orders.length === 0 ? (
         <p className="text-[var(--color-gris-piedra)]">No hay pedidos.</p>
       ) : (
-        <table className="w-full bg-white rounded shadow text-sm">
-          <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
-            <tr>
-              <th className="text-left px-4 py-3">#</th>
-              <th className="text-left px-4 py-3">Fecha</th>
-              <th className="text-left px-4 py-3">Items</th>
-              <th className="text-left px-4 py-3">Total</th>
-              <th className="text-left px-4 py-3">Estado</th>
-              <th className="text-left px-4 py-3">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order.id} className="border-t border-[var(--color-gris-piedra)]">
-                <td className="px-4 py-3">#{order.id}</td>
-                <td className="px-4 py-3">
-                  {new Date(order.createdAt).toLocaleDateString("es-AR")}
-                </td>
-                <td className="px-4 py-3">{order.items.length} productos</td>
-                <td className="px-4 py-3">${order.total}</td>
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${statusColors[order.status]}`}>
-                    {statusLabels[order.status]}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <a
-                    href={`/dashboard/orders/${order.id}`}
-                    className="text-[var(--color-verde-bosque)] hover:underline"
-                  >
-                    Ver detalle
-                  </a>
-                </td>
+        <div className="overflow-x-auto rounded shadow">
+          <table className="w-full bg-white text-sm min-w-[560px]">
+            <thead className="bg-[var(--color-verde-suave)] text-[var(--color-verde-profundo)]">
+              <tr>
+                <th className="text-left px-4 py-3">#</th>
+                <th className="text-left px-4 py-3">Fecha</th>
+                <th className="text-left px-4 py-3">Items</th>
+                <th className="text-left px-4 py-3">Total</th>
+                <th className="text-left px-4 py-3">Estado</th>
+                <th className="text-left px-4 py-3">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order.id} className="border-t border-[var(--color-gris-piedra)]">
+                  <td className="px-4 py-3">#{order.id}</td>
+                  <td className="px-4 py-3">
+                    {new Date(order.createdAt).toLocaleDateString("es-AR")}
+                  </td>
+                  <td className="px-4 py-3">{order.items.length} productos</td>
+                  <td className="px-4 py-3">${order.total}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded text-xs font-medium ${statusColors[order.status]}`}>
+                      {statusLabels[order.status]}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <a
+                      href={`/dashboard/orders/${order.id}`}
+                      className="text-[var(--color-verde-bosque)] hover:underline"
+                    >
+                      Ver detalle
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <div className="flex gap-2 justify-center">
