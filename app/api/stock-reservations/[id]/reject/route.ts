@@ -21,7 +21,11 @@ export async function POST(
   if (isNaN(orderId)) {
     return apiError("Invalid reservation ID", 400);
   }
-
+  let body: { buyer_order_id?: string; rejected_at?: string } = {};
+  try {
+    body = await req.json();
+  } catch {
+  }
   try {
     const order = await prisma.incomingOrder.findUnique({
       where: { id: orderId },
@@ -50,9 +54,9 @@ export async function POST(
     });
 
     return NextResponse.json({
-      reservation_id: `res_${orderId}`,
+      buyer_order_id: body.buyer_order_id ?? order.buyerOrderId,
       status: "cancelled",
-      released_at: new Date().toISOString(),
+      released_at: body.rejected_at ?? new Date().toISOString(),
     });
   } catch (error) {
     console.error("[POST /api/stock-reservations/:id/reject]", error);

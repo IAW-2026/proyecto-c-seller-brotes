@@ -58,9 +58,9 @@ export async function POST(
     });
 
     return NextResponse.json({
-      reservation_id: `res_${updated.id}`,
+      buyer_order_id: body.buyer_order_id ?? updated.buyerOrderId,
       status: "confirmed",
-      payment_id: body.buyer_order_id ?? null,
+      payment_id: null, // Payments App no lo manda, se deja null
       confirmed_at: body.confirmed_at ?? new Date().toISOString(),
     });
   } catch (error) {

@@ -21,16 +21,15 @@ export async function POST(req: NextRequest) {
   const authError = validateServiceKey(req);
   if (authError) return authError;
 
-  let body: { buyer_id?: string; seller_id?: string; items?: ReservationItem[] };
+  let body: { buyer_id?: string; buyer_order_id?: string; items?: ReservationItem[] };
   try {
     body = await req.json();
   } catch {
     return apiError("Invalid JSON", 400);  
   }
 
-  const { buyer_id, seller_id, items } = body;
-
-  if (!buyer_id || !seller_id || !Array.isArray(items) || items.length === 0) {
+  const { buyer_id, buyer_order_id, items } = body;
+  if (!buyer_id || !buyer_order_id || !Array.isArray(items) || items.length === 0) {
     return apiError("Missing required fields", 400);  
   }
 
@@ -68,11 +67,11 @@ export async function POST(req: NextRequest) {
         const product = products.find((p) => p.id === item.product_id)!;
         return acc + product.price * item.quantity;
       }, 0);
-
+      
       const order = await tx.incomingOrder.create({
         data: {
-          sellerId: parseInt(seller_id),
-          buyerOrderId: "",
+          sellerId: products[0].sellerId,
+          buyerOrderId: buyer_order_id,
           buyerId: buyer_id,
           total,
           status: "pendiente",
@@ -105,7 +104,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       {
-        reservation_id: `res_${result.id}`,
+        incoming_order_id: result.id,
         status: "reserved",
         items: items.map((i) => ({
           product_id: i.product_id,
