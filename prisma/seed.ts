@@ -5,6 +5,15 @@ import { prisma } from "../lib/prisma";
 async function main() {
   console.log("🌱 Iniciando seed...");
 
+  // ─── Limpieza ────────────────────────────────────────────────────────────────
+  await prisma.payoutNotification.deleteMany();
+  await prisma.incomingOrderItem.deleteMany();
+  await prisma.incomingOrder.deleteMany();
+  await prisma.product.deleteMany();
+  await prisma.seller.deleteMany();
+
+  console.log("🧹 Base de datos limpiada");
+
   // ─── Seller principal (tu cuenta) ───────────────────────────────────────────
   const seller = await prisma.seller.upsert({
     where: { clerkUserId: "user_3DlMcPLckasFoKzWsooPNyIWakU" },
@@ -396,10 +405,10 @@ async function main() {
       buyerId: "buyer_aaa",
       total: 4500,
       status: IncomingOrderStatus.pendiente,
-      createdAt: new Date(Date.now() - 1000 * 60 * 30), // hace 30 min
+      createdAt: new Date(Date.now() - 1000 * 60 * 30),
       items: [
-        { product: productos[0], quantity: 2 }, // 2x Pothos
-        { product: productos[2], quantity: 1 }, // 1x Echeveria
+        { product: productos[0], quantity: 2 },
+        { product: productos[2], quantity: 1 },
       ],
     },
     {
@@ -407,9 +416,9 @@ async function main() {
       buyerId: "buyer_bbb",
       total: 6800,
       status: IncomingOrderStatus.recibida,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // hace 2 hs
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
       items: [
-        { product: productos[5], quantity: 1 }, // 1x Monstera
+        { product: productos[5], quantity: 1 },
       ],
     },
     {
@@ -417,10 +426,10 @@ async function main() {
       buyerId: "buyer_ccc",
       total: 8000,
       status: IncomingOrderStatus.en_preparacion,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // hace 5 hs
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5),
       items: [
-        { product: productos[1], quantity: 2 }, // 2x Cactus
-        { product: productos[6], quantity: 1 }, // 1x Kit suculentas
+        { product: productos[1], quantity: 2 },
+        { product: productos[6], quantity: 1 },
       ],
     },
     {
@@ -428,9 +437,9 @@ async function main() {
       buyerId: "buyer_ddd",
       total: 4500,
       status: IncomingOrderStatus.listo,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // hace 1 día
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
       items: [
-        { product: productos[4], quantity: 1 }, // 1x Limonero
+        { product: productos[4], quantity: 1 },
       ],
     },
     {
@@ -438,9 +447,9 @@ async function main() {
       buyerId: "buyer_eee",
       total: 3200,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48), // hace 2 días
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48),
       items: [
-        { product: productos[6], quantity: 1 }, // 1x Kit suculentas
+        { product: productos[6], quantity: 1 },
       ],
     },
     {
@@ -448,10 +457,10 @@ async function main() {
       buyerId: "buyer_fff",
       total: 2400,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72), // hace 3 días
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72),
       items: [
-        { product: productos[0], quantity: 1 }, // 1x Pothos
-        { product: productos[2], quantity: 1 }, // 1x Echeveria
+        { product: productos[0], quantity: 1 },
+        { product: productos[2], quantity: 1 },
       ],
     },
     {
@@ -459,9 +468,9 @@ async function main() {
       buyerId: "buyer_ggg",
       total: 1600,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 96), // hace 4 días
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 96),
       items: [
-        { product: productos[2], quantity: 2 }, // 2x Echeveria
+        { product: productos[2], quantity: 2 },
       ],
     },
   ];
@@ -498,8 +507,8 @@ async function main() {
       status: IncomingOrderStatus.recibida,
       createdAt: new Date(Date.now() - 1000 * 60 * 45),
       items: [
-        { product: productosVerde[0], quantity: 1 }, // 1x Ficus Lyrata
-        { product: productosVerde[2], quantity: 1 }, // 1x Romero
+        { product: productosVerde[0], quantity: 1 },
+        { product: productosVerde[2], quantity: 1 },
       ],
     },
     {
@@ -509,7 +518,7 @@ async function main() {
       status: IncomingOrderStatus.en_preparacion,
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3),
       items: [
-        { product: productosVerde[1], quantity: 2 }, // 2x Cactus San Pedro
+        { product: productosVerde[1], quantity: 2 },
       ],
     },
     {
@@ -519,7 +528,7 @@ async function main() {
       status: IncomingOrderStatus.entregada,
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 36),
       items: [
-        { product: productosVerde[3], quantity: 2 }, // 2x Haworthia
+        { product: productosVerde[3], quantity: 2 },
       ],
     },
     {
@@ -529,7 +538,7 @@ async function main() {
       status: IncomingOrderStatus.entregada,
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 60),
       items: [
-        { product: productosVerde[2], quantity: 1 }, // 1x Romero
+        { product: productosVerde[2], quantity: 1 },
       ],
     },
   ];
@@ -566,7 +575,7 @@ async function main() {
       status: IncomingOrderStatus.pendiente,
       createdAt: new Date(Date.now() - 1000 * 60 * 15),
       items: [
-        { product: productosBotanica[0], quantity: 1 }, // 1x Alocasia
+        { product: productosBotanica[0], quantity: 1 },
       ],
     },
     {
@@ -576,8 +585,8 @@ async function main() {
       status: IncomingOrderStatus.listo,
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8),
       items: [
-        { product: productosBotanica[2], quantity: 1 }, // 1x Kit Aromáticas
-        { product: productosBotanica[1], quantity: 1 }, // 1x Menta
+        { product: productosBotanica[2], quantity: 1 },
+        { product: productosBotanica[1], quantity: 1 },
       ],
     },
     {
@@ -587,7 +596,7 @@ async function main() {
       status: IncomingOrderStatus.entregada,
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 50),
       items: [
-        { product: productosBotanica[3], quantity: 2 }, // 2x Agave
+        { product: productosBotanica[3], quantity: 2 },
       ],
     },
   ];
@@ -624,8 +633,8 @@ async function main() {
       status: IncomingOrderStatus.recibida,
       createdAt: new Date(Date.now() - 1000 * 60 * 90),
       items: [
-        { product: productosMar[2], quantity: 1 }, // 1x Mandarina
-        { product: productosMar[3], quantity: 1 }, // 1x Tillandsia
+        { product: productosMar[2], quantity: 1 },
+        { product: productosMar[3], quantity: 1 },
       ],
     },
     {
@@ -635,8 +644,8 @@ async function main() {
       status: IncomingOrderStatus.en_preparacion,
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 6),
       items: [
-        { product: productosMar[1], quantity: 2 }, // 2x Gymnocalycium
-        { product: productosMar[4], quantity: 1 }, // 1x Maceta
+        { product: productosMar[1], quantity: 2 },
+        { product: productosMar[4], quantity: 1 },
       ],
     },
     {
@@ -646,7 +655,7 @@ async function main() {
       status: IncomingOrderStatus.entregada,
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 30),
       items: [
-        { product: productosMar[0], quantity: 1 }, // 1x Hiedra
+        { product: productosMar[0], quantity: 1 },
       ],
     },
     {
@@ -656,7 +665,7 @@ async function main() {
       status: IncomingOrderStatus.entregada,
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 80),
       items: [
-        { product: productosMar[3], quantity: 2 }, // 2x Tillandsia
+        { product: productosMar[3], quantity: 2 },
       ],
     },
   ];
@@ -683,6 +692,112 @@ async function main() {
   }
 
   console.log("✅ Pedidos de Plantas del Mar creados");
+
+  // ─── Acreditaciones — Seller principal ──────────────────────────────────────
+  // Corresponden a las órdenes entregadas: ord_005, ord_006, ord_007
+  await Promise.all([
+    prisma.payoutNotification.create({
+      data: {
+        sellerId: seller.id,
+        paymentId: "pay_005",
+        amount: 3200,
+        currency: "ARS",
+        read: true,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 49),
+      },
+    }),
+    prisma.payoutNotification.create({
+      data: {
+        sellerId: seller.id,
+        paymentId: "pay_006",
+        amount: 2400,
+        currency: "ARS",
+        read: true,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 73),
+      },
+    }),
+    prisma.payoutNotification.create({
+      data: {
+        sellerId: seller.id,
+        paymentId: "pay_007",
+        amount: 1600,
+        currency: "ARS",
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 97),
+      },
+    }),
+  ]);
+
+  console.log("✅ Acreditaciones del seller principal creadas");
+
+  // ─── Acreditaciones — Verde Córdoba ─────────────────────────────────────────
+  // Corresponden a las órdenes entregadas: ord_v03, ord_v04
+  await Promise.all([
+    prisma.payoutNotification.create({
+      data: {
+        sellerId: sellerVerde.id,
+        paymentId: "pay_v03",
+        amount: 2200,
+        currency: "ARS",
+        read: true,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 37),
+      },
+    }),
+    prisma.payoutNotification.create({
+      data: {
+        sellerId: sellerVerde.id,
+        paymentId: "pay_v04",
+        amount: 950,
+        currency: "ARS",
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 61),
+      },
+    }),
+  ]);
+
+  console.log("✅ Acreditaciones de Verde Córdoba creadas");
+
+  // ─── Acreditaciones — Botánica Rosario ──────────────────────────────────────
+  // Corresponde a la orden entregada: ord_b03
+  await prisma.payoutNotification.create({
+    data: {
+      sellerId: sellerBotanica.id,
+      paymentId: "pay_b03",
+      amount: 8200,
+      currency: "ARS",
+      read: false,
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 51),
+    },
+  });
+
+  console.log("✅ Acreditaciones de Botánica Rosario creadas");
+
+  // ─── Acreditaciones — Plantas del Mar ───────────────────────────────────────
+  // Corresponden a las órdenes entregadas: ord_m03, ord_m04
+  await Promise.all([
+    prisma.payoutNotification.create({
+      data: {
+        sellerId: sellerMar.id,
+        paymentId: "pay_m03",
+        amount: 1300,
+        currency: "ARS",
+        read: true,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 31),
+      },
+    }),
+    prisma.payoutNotification.create({
+      data: {
+        sellerId: sellerMar.id,
+        paymentId: "pay_m04",
+        amount: 3200,
+        currency: "ARS",
+        read: false,
+        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 81),
+      },
+    }),
+  ]);
+
+  console.log("✅ Acreditaciones de Plantas del Mar creadas");
   console.log("🌿 Seed completado con éxito");
 }
 
