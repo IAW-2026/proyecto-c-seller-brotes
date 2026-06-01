@@ -49,8 +49,10 @@ model Seller {
   status      SellerStatus @default(active)
   products    Product[]
   incomingOrders IncomingOrder[]
+  payoutNotifications PayoutNotification[]
 
   @@map("sellers")
+  
 }
 
 model Product {
@@ -96,4 +98,17 @@ model IncomingOrderItem {
   quantity            Int
 
   @@map("incoming_order_items")
+}
+
+model PayoutNotification {
+  id         Int      @id @default(autoincrement())
+  sellerId   Int      @map("seller_id")
+  seller     Seller   @relation(fields: [sellerId], references: [id])
+  paymentId  String   @map("payment_id")
+  amount     Float
+  currency   String
+  read       Boolean  @default(false)
+  createdAt  DateTime @map("created_at")
+
+  @@map("payout_notifications")
 }

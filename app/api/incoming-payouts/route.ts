@@ -40,9 +40,16 @@ export async function POST(req: NextRequest) {
       return apiError("Seller not found", 404);  
     }
 
-    console.log(
-      `[incoming-payout] payout_id=${payout_id} payment_id=${payment_id} seller_id=${seller_id} amount=${amount.value} ${amount.currency}`
-    );
+    await prisma.payoutNotification.create({
+      data: {
+        sellerId: seller.id,
+        paymentId: payment_id,
+        amount: amount.value,
+        currency: amount.currency,
+        read: false,
+        createdAt: body.created_at ? new Date(body.created_at) : new Date(),
+      },
+});
 
     return NextResponse.json(
       { acknowledged: true, payout_id, seller_id: seller.id },

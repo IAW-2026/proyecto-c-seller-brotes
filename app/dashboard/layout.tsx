@@ -36,6 +36,7 @@ export default async function DashboardLayout({
           <NavLink href="/dashboard" exact>Inicio</NavLink>
           <NavLink href="/dashboard/products">Mis productos</NavLink>
           <NavLink href="/dashboard/orders">Pedidos</NavLink>
+          <NavLink href="/dashboard/notifications">Acreditaciones</NavLink>
         </nav>
         <div className="mt-auto hidden md:block">
           <UserMenu />
