@@ -3,13 +3,13 @@
 
 ## Usuarios de prueba
 
-| Nombre | Email | Contraseña |
-|--------|-------|------------|
-| Marta Giménez | seller+clerktest@iaw.com | — |
-| Carlos Pereyra | seller2+clerktest@iaw.com | — |
-| Lucía Fernández | seller3+clerktest@iaw.com | — |
-| Roberto Medina | seller4+clerktest@iaw.com | — |
-| Administrador | admin+clerktest@iaw.com | — |
+| Nombre | Email |
+|--------|-------|
+| Marta Giménez | seller+clerk_test@iaw.com |
+| Carlos Pereyra | seller2+clerk_test@iaw.com|
+| Lucía Fernández | seller3+clerk_test@iaw.com |
+| Roberto Medina | seller4+clerk_test@iaw.com |
+| Administrador | admin+clerk_test@iaw.com |
 
 ---
 
@@ -57,7 +57,10 @@ Para producción: `npm run build && npm start`, o desplegar directamente en Verc
 
 **Brotes** es un marketplace de plantas y productos de jardinería. Este repositorio corresponde a la **Seller App**, la aplicación que usan los vendedores para gestionar su catálogo, administrar stock y recibir pedidos entrantes desde la Buyer App.
 
-La app también incluye un panel administrativo desde donde se pueden revisar vendedores, productos y notificaciones de pago. La autenticación es compartida con el resto del sistema mediante Clerk, usando roles definidos en `publicMetadata` del JWT.
+La app también incluye un panel administrativo desde donde se pueden revisar vendedores, 
+productos y notificaciones de pago. La autenticación es compartida con el resto del sistema 
+mediante Clerk, usando roles definidos en `publicMetadata` del JWT. El registro está 
+configurado para asignar el rol `seller` automáticamente a los nuevos usuarios.
 
 Está construida con Next.js (App Router), Prisma sobre PostgreSQL, Cloudinary para imágenes y OpenWeather para información climática en los componentes de la tienda. Los endpoints expuestos siguen el contrato de APIs acordado con el equipo para la comunicación entre servicios.
 
