@@ -52,7 +52,7 @@ export default async function AdminPage() {
         <StatCard
           label="Acreditaciones"
           value={totalPayouts}
-          href="/admin/payouts"
+          href="/admin/notifications" 
           icon={<IconDollar size={28} />}
           bg="bg-[var(--color-verde-suave)]"
           iconColor="text-[var(--color-verde-bosque)]"
