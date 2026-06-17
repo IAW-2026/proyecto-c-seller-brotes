@@ -20,9 +20,23 @@ export async function updateOrderStatus(
     email: user!.emailAddresses[0].emailAddress,
   });
 
-  await prisma.incomingOrder.update({
+  const order = await prisma.incomingOrder.update({
     where: { id, sellerId: seller.id },
     data: { status: newStatus },
+  });
+
+  // Notificar a Buyer App
+  await fetch(`${process.env.BUYER_APP_URL}/api/orders/${order.buyerOrderId}/status-update`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.BUYER_SERVICE_API_KEY}`,
+    },
+    body: JSON.stringify({
+      order_id: order.buyerOrderId,
+      status: newStatus,
+      updated_at: new Date().toISOString(),
+    }),
   });
 
   redirect(`/dashboard/orders/${id}`);

@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function validateServiceKey(req: NextRequest): NextResponse | null {
   const authHeader = req.headers.get("authorization");
-  const expected = `Bearer ${process.env.SERVICE_API_KEY}`;
+  const expected = `Bearer ${process.env.SELLER_SERVICE_API_KEY}`;
 
   if (!authHeader || authHeader !== expected) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
