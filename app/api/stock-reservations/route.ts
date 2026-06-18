@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   const authError = validateServiceKey(req);
   if (authError) return authError;
 
-  let body: { buyer_id?: string; buyer_order_id?: string; items?: ReservationItem[] };
+  let body: { buyer_id?: string; buyer_order_id?: string | number; items?: ReservationItem[] };
   try {
     body = await req.json();
   } catch {
@@ -32,6 +32,8 @@ export async function POST(req: NextRequest) {
   if (!buyer_id || !buyer_order_id || !Array.isArray(items) || items.length === 0) {
     return apiError("Missing required fields", 400);  
   }
+
+  const buyerOrderIdStr = String(buyer_order_id); // ← conversión defensiva
 
   if (!items) {
     return apiError("Items are required", 400);
@@ -71,7 +73,7 @@ export async function POST(req: NextRequest) {
       const order = await tx.incomingOrder.create({
         data: {
           sellerId: products[0].sellerId,
-          buyerOrderId: buyer_order_id,
+          buyerOrderId: buyerOrderIdStr, // ← acá
           buyerId: buyer_id,
           total,
           status: "pendiente",
