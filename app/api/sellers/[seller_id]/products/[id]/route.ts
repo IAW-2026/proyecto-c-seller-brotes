@@ -26,8 +26,8 @@ export async function GET(
   try { 
     const product = await prisma.product.findFirst({
       where: { id: productId, sellerId },
+      include: { seller: true },
     });
-
     if (!product) {
       return apiError("Product not found", 404);
     }
@@ -35,6 +35,7 @@ export async function GET(
     return NextResponse.json({
       id: product.id,
       seller_id: product.sellerId,
+      seller_email: product.seller.email,
       name: product.name,
       description: product.description ?? null,
       category: product.category,
