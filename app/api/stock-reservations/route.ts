@@ -33,7 +33,8 @@ export async function POST(req: NextRequest) {
     return apiError("Missing required fields", 400);  
   }
 
-  const buyerOrderIdStr = String(buyer_order_id); // ← conversión defensiva
+  const buyerOrderIdStr = String(buyer_order_id); 
+  const buyerIdStr = String(buyer_id); 
 
   if (!items) {
     return apiError("Items are required", 400);
@@ -73,8 +74,8 @@ export async function POST(req: NextRequest) {
       const order = await tx.incomingOrder.create({
         data: {
           sellerId: products[0].sellerId,
-          buyerOrderId: buyerOrderIdStr, // ← acá
-          buyerId: buyer_id,
+          buyerOrderId: buyerOrderIdStr,
+          buyerId: buyerIdStr,
           total,
           status: "pendiente",
           items: {
