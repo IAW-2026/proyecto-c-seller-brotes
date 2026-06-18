@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
       id: p.id,
       seller_id: p.sellerId,
       name: p.name,
+      description: p.description ?? null,
       category: p.category,
       price: { amount: p.price, currency: "ARS" },
       stock: {
