@@ -1,9 +1,3 @@
-// POST /api/stock-reservations/:id/reject
-// Lo llama Payments App cuando el pago fue rechazado. 
-// Recibe el ID de la reserva y hace lo contrario al confirm: devuelve las unidades de stockReserved a 
-//    stockAvailable y elimina la IncomingOrder. 
-// El stock queda libre para que otro comprador lo pueda comprar.
-
 import { NextRequest, NextResponse } from "next/server";
 import { validateServiceKey } from "@/lib/auth-service";
 import { prisma } from "@/lib/prisma";
@@ -17,18 +11,19 @@ export async function POST(
   if (authError) return authError;
 
   const { id } = await params;
-  const orderId = parseInt(id);
-  if (isNaN(orderId)) {
+  if (!id) {
     return apiError("Invalid reservation ID", 400);
   }
+
   let body: { buyer_order_id?: string; rejected_at?: string } = {};
   try {
     body = await req.json();
   } catch {
   }
+
   try {
     const order = await prisma.incomingOrder.findUnique({
-      where: { id: orderId },
+      where: { buyerOrderId: id },
       include: { items: true },
     });
 
@@ -50,7 +45,7 @@ export async function POST(
         });
       }
 
-      await tx.incomingOrder.delete({ where: { id: orderId } });
+      await tx.incomingOrder.delete({ where: { buyerOrderId: id } });
     });
 
     return NextResponse.json({

@@ -77,7 +77,7 @@ model IncomingOrder {
   id           Int                 @id @default(autoincrement())
   sellerId     Int                 @map("seller_id")
   seller       Seller              @relation(fields: [sellerId], references: [id])
-  buyerOrderId String              @map("buyer_order_id")
+  buyerOrderId String              @unique @map("buyer_order_id")
   buyerId      String              @map("buyer_id")
   total        Float
   status       IncomingOrderStatus @default(pendiente)

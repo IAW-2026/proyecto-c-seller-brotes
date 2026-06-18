@@ -1,8 +1,3 @@
-// POST /api/stock-reservations/:id/confirm
-// Lo llama Payments App cuando el pago fue aprobado. 
-// Recibe el ID de la reserva, cambia la IncomingOrder de pendiente a recibida, y descuenta las unidades de 
-//    stockReserved — porque ya no están reservadas, están vendidas definitivamente. 
-
 import { NextRequest, NextResponse } from "next/server";
 import { validateServiceKey } from "@/lib/auth-service";
 import { prisma } from "@/lib/prisma";
@@ -16,8 +11,7 @@ export async function POST(
   if (authError) return authError;
 
   const { id } = await params;
-  const orderId = parseInt(id);
-  if (isNaN(orderId)) {
+  if (!id) {
     return apiError("Invalid reservation ID", 400);
   }
 
@@ -29,7 +23,7 @@ export async function POST(
   }
 
   try {
-    const order = await prisma.incomingOrder.findUnique({ where: { id: orderId } });
+    const order = await prisma.incomingOrder.findUnique({ where: { buyerOrderId: id } });
     if (!order) {
       return apiError("Reservation not found", 404);
     }
@@ -39,7 +33,7 @@ export async function POST(
 
     const updated = await prisma.$transaction(async (tx) => {
       const updated = await tx.incomingOrder.update({
-        where: { id: orderId },
+        where: { buyerOrderId: id },
         data: {
           status: "recibida",
           buyerOrderId: body.buyer_order_id ?? order.buyerOrderId,
@@ -60,7 +54,7 @@ export async function POST(
     return NextResponse.json({
       buyer_order_id: body.buyer_order_id ?? updated.buyerOrderId,
       status: "confirmed",
-      payment_id: null, // Payments App no lo manda, se deja null
+      payment_id: null,
       confirmed_at: body.confirmed_at ?? new Date().toISOString(),
     });
   } catch (error) {
