@@ -26,18 +26,23 @@ export async function updateOrderStatus(
   });
 
   // Notificar a Buyer App
-  await fetch(`${process.env.BUYER_APP_URL}/api/orders/${order.buyerOrderId}/status-update`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.BUYER_SERVICE_API_KEY}`,
-    },
-    body: JSON.stringify({
-      order_id: order.buyerOrderId,
-      status: newStatus,
-      updated_at: new Date().toISOString(),
-    }),
-  });
+  try {
+    const res = await fetch(`${process.env.BUYER_APP_URL}/api/orders/${order.buyerOrderId}/status-update`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.BUYER_SERVICE_API_KEY}`,
+      },
+      body: JSON.stringify({
+        order_id: order.buyerOrderId,
+        status: newStatus,
+        updated_at: new Date().toISOString(),
+      }),
+    });
+    console.log("[updateOrderStatus] Buyer notificado:", res.status);
+  } catch (err) {
+    console.error("[updateOrderStatus] Error notificando a Buyer:", err);
+  }
 
   redirect(`/dashboard/orders/${id}`);
 }
