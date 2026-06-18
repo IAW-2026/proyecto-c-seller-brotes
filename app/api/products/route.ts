@@ -3,8 +3,10 @@
 // Lo llama Buyer App para mostrar el catálogo. Devuelve todos los productos con status: active paginados.
 // Buyer manda ?page=1&limit=20 y se le devuelve los productos con precio, stock y datos del seller.
 // Si no manda parámetros, por defecto es página 1 con 20 productos.
+// Si manda ?seller_id=X, filtra por ese vendedor.
 
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma, ProductStatus } from "@prisma/client";
 import { validateServiceKey } from "@/lib/auth-service";
 import { prisma } from "@/lib/prisma";
 import { apiError } from "@/lib/api-error";
@@ -17,17 +19,24 @@ export async function GET(req: NextRequest) {
   const page = Math.max(1, parseInt(searchParams.get("page") ?? "1"));
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") ?? "20")));
   const skip = (page - 1) * limit;
+  const sellerIdParam = searchParams.get("seller_id");
+  const sellerId = sellerIdParam ? parseInt(sellerIdParam) : null;
+
+  const where: Prisma.ProductWhereInput = {
+    status: ProductStatus.active,
+    ...(sellerId ? { sellerId } : {}),
+  };
 
   try {
     const [products, total] = await Promise.all([
       prisma.product.findMany({
-        where: { status: "active" },
+        where,
         include: { seller: true },
         skip,
         take: limit,
         orderBy: { createdAt: "desc" },
       }),
-      prisma.product.count({ where: { status: "active" } }),
+      prisma.product.count({ where }),
     ]);
 
     const data = products.map((p) => ({
