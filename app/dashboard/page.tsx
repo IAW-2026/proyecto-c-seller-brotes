@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { statusLabels, statusColors } from "@/lib/constants";
 import { IconBox, IconPlant, IconAlert, IconUserEdit, IconWallet } from "@/components/icons";
 import StatCard from "@/components/StatCard";
+import { formatDateAR } from "@/lib/utils";
 
 export default async function DashboardPage() {
   await requireSeller();
@@ -117,9 +118,7 @@ export default async function DashboardPage() {
                   <div className="flex flex-col">
                     <span className="font-medium text-gray-700">Pedido #{order.id}</span>
                     <span className="text-xs text-gray-400">
-                      {new Date(order.createdAt).toLocaleDateString("es-AR", {
-                        day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit",
-                      })}
+                      {formatDateAR(order.createdAt)}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">

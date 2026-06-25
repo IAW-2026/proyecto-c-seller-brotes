@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { formatDateAR } from "@/lib/utils";
 
 export default async function AdminNotificationDetailPage({
   params,
@@ -48,7 +49,7 @@ export default async function AdminNotificationDetailPage({
         </div>
         <div className="flex justify-between">
           <span className="text-[var(--color-gris-piedra)]">Fecha</span>
-          <span>{new Date(notification.createdAt).toLocaleString("es-AR")}</span>
+          <span>{formatDateAR(notification.createdAt)}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-[var(--color-gris-piedra)]">Estado</span>
