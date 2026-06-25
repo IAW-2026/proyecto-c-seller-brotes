@@ -19,6 +19,14 @@ async function main() {
 
   console.log("🧹 Base de datos limpiada");
 
+  // ─── Helper de fechas ────────────────────────────────────────────────────────
+  // Para que el Analytics Dashboard pueda graficar tendencias (no solo "esta semana"),
+  // distribuimos las órdenes en los últimos ~90 días en lugar de comprimirlas en
+  // unos pocos días. `hoursAgo` sigue funcionando para los pedidos "en curso" recientes.
+  const hoursAgo = (h: number) => new Date(Date.now() - 1000 * 60 * 60 * h);
+  const daysAgo = (d: number, hourOffset = 12) =>
+    new Date(Date.now() - 1000 * 60 * 60 * 24 * d - 1000 * 60 * 60 * hourOffset);
+
   // ─── Sellers (usuarios reales de Clerk) ─────────────────────────────────────
   // seller+clerktest@iaw.com  → Marta Giménez
   // seller2+clerktest@iaw.com → Carlos Pereyra
@@ -98,6 +106,27 @@ async function main() {
       city: "Mar del Plata",
       address: "Diagonal 74 nro 321, Mar del Plata",
       status: SellerStatus.active,
+    },
+  });
+
+  // Nuevo: un quinto seller "inactivo" — útil para reportes de Control Plane /
+  // Analytics que quieran mostrar "vendedores activos vs inactivos" o moderación.
+  const seller5 = await prisma.seller.upsert({
+    where: { clerkUserId: "user_3EY9zRtQX4MwLkPaQabcDE5fGh1" },
+    update: {
+      name: "Jardín Suspendido",
+      email: "seller5+clerktest@iaw.com",
+      city: "Mendoza",
+      address: "San Martín 450, Mendoza",
+      status: SellerStatus.inactive,
+    },
+    create: {
+      clerkUserId: "user_3EY9zRtQX4MwLkPaQabcDE5fGh1",
+      name: "Jardín Suspendido",
+      email: "seller5+clerktest@iaw.com",
+      city: "Mendoza",
+      address: "San Martín 450, Mendoza",
+      status: SellerStatus.inactive,
     },
   });
 
@@ -255,6 +284,23 @@ async function main() {
           "https://images.unsplash.com/photo-1567611663076-424b8d73e65b?w=400",
       },
     }),
+    // Nuevo: producto de catálogo sin ninguna venta — para reportes de
+    // "productos sin movimiento" / cola larga de catálogo.
+    prisma.product.create({
+      data: {
+        sellerId: seller1.id,
+        name: "Helecho Nido de Ave",
+        description:
+          "Helecho de hojas onduladas color verde brillante. Prefiere ambientes húmedos y luz indirecta. Decorativo para baños y cocinas.",
+        category: ProductCategory.plantas_de_interior,
+        price: 2100,
+        stockAvailable: 9,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=400",
+      },
+    }),
   ]);
 
   console.log("✅ Productos de Vivero Giménez creados");
@@ -394,6 +440,22 @@ async function main() {
         status: ProductStatus.active,
         imageUrl:
           "https://images.unsplash.com/photo-1515586838455-8a8a9b7ed5e6?w=400",
+      },
+    }),
+    // Nuevo: segundo producto sin ventas para Verde Córdoba.
+    prisma.product.create({
+      data: {
+        sellerId: seller2.id,
+        name: "Bonsái Ficus Ginseng",
+        description:
+          "Bonsái de raíz expuesta, ideal para principiantes en el arte del bonsái. Requiere poda regular y luz brillante indirecta.",
+        category: ProductCategory.colecciones_raras,
+        price: 7600,
+        stockAvailable: 4,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?w=400",
       },
     }),
   ]);
@@ -652,6 +714,46 @@ async function main() {
 
   console.log("✅ Productos de Plantas del Mar creados");
 
+  // ─── Productos — Jardín Suspendido (seller5, inactivo) ───────────────────────
+  // Seller inactivo con catálogo chico y sin ninguna orden — sirve para que el
+  // Control Plane / Analytics distingan "vendedores activos" de "suspendidos"
+  // y para verificar que un seller inactivo no aparece en listados públicos.
+  const p5 = await Promise.all([
+    prisma.product.create({
+      data: {
+        sellerId: seller5.id,
+        name: "Potus Neón",
+        description:
+          "Variedad de pothos con hojas de color verde lima muy intenso. Necesita buena luz indirecta para mantener su color.",
+        category: ProductCategory.plantas_de_interior,
+        price: 1700,
+        stockAvailable: 5,
+        stockReserved: 0,
+        status: ProductStatus.inactive,
+        imageUrl:
+          "https://images.unsplash.com/photo-1598880940080-ff9a29891b85?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller5.id,
+        name: "Cactus Mammillaria",
+        description:
+          "Pequeño cactus globular con espinas blancas dispuestas en espiral. Floración rosada en primavera.",
+        category: ProductCategory.cactus,
+        price: 1300,
+        stockAvailable: 0,
+        stockReserved: 0,
+        status: ProductStatus.inactive,
+        imageUrl:
+          "https://images.unsplash.com/photo-1567611663076-424b8d73e65b?w=400",
+      },
+    }),
+  ]);
+  void p5;
+
+  console.log("✅ Productos de Jardín Suspendido creados (seller inactivo)");
+
   // ─── Helper para crear órdenes ───────────────────────────────────────────────
   type OrderSeed = {
     buyerOrderId: string;
@@ -684,14 +786,18 @@ async function main() {
     });
   }
 
-  // ─── Pedidos — Vivero Giménez (seller1) ──────────────────────────────────────
+  // ─── Pedidos — Vivero Giménez (seller1) — "top seller" ───────────────────────
+  // Le agregamos una cola larga de pedidos entregados en los últimos 3 meses,
+  // además de los pedidos recientes "en curso" que ya tenías. Esto lo convierte
+  // en el seller con mayor volumen, útil para un ranking "top sellers".
   const ordenesS1: OrderSeed[] = [
+    // En curso (recientes, como antes)
     {
       buyerOrderId: "ord_s1_001",
       buyerId: "buyer_ext_001",
       total: 3800,
       status: IncomingOrderStatus.pendiente,
-      createdAt: new Date(Date.now() - 1000 * 60 * 20),
+      createdAt: hoursAgo(0.33),
       sellerId: seller1.id,
       items: [{ product: p1[0], quantity: 2 }, { product: p1[2], quantity: 1 }],
     },
@@ -700,7 +806,7 @@ async function main() {
       buyerId: "buyer_ext_002",
       total: 6800,
       status: IncomingOrderStatus.recibida,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
+      createdAt: hoursAgo(2),
       sellerId: seller1.id,
       items: [{ product: p1[5], quantity: 1 }],
     },
@@ -709,7 +815,7 @@ async function main() {
       buyerId: "buyer_ext_003",
       total: 7600,
       status: IncomingOrderStatus.en_preparacion,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5),
+      createdAt: hoursAgo(5),
       sellerId: seller1.id,
       items: [{ product: p1[1], quantity: 2 }, { product: p1[6], quantity: 1 }],
     },
@@ -718,16 +824,17 @@ async function main() {
       buyerId: "buyer_ext_004",
       total: 4500,
       status: IncomingOrderStatus.listo,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
+      createdAt: hoursAgo(24),
       sellerId: seller1.id,
       items: [{ product: p1[4], quantity: 1 }],
     },
+    // Entregadas — última semana
     {
       buyerOrderId: "ord_s1_005",
       buyerId: "buyer_ext_005",
       total: 3200,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48),
+      createdAt: hoursAgo(48),
       sellerId: seller1.id,
       items: [{ product: p1[6], quantity: 1 }],
     },
@@ -736,7 +843,7 @@ async function main() {
       buyerId: "buyer_ext_006",
       total: 2300,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 72),
+      createdAt: hoursAgo(72),
       sellerId: seller1.id,
       items: [{ product: p1[0], quantity: 1 }, { product: p1[2], quantity: 1 }],
     },
@@ -745,7 +852,7 @@ async function main() {
       buyerId: "buyer_ext_007",
       total: 1600,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 96),
+      createdAt: hoursAgo(96),
       sellerId: seller1.id,
       items: [{ product: p1[2], quantity: 2 }],
     },
@@ -754,7 +861,7 @@ async function main() {
       buyerId: "buyer_ext_008",
       total: 5700,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 120),
+      createdAt: hoursAgo(120),
       sellerId: seller1.id,
       items: [{ product: p1[3], quantity: 2 }, { product: p1[9], quantity: 2 }],
     },
@@ -763,9 +870,136 @@ async function main() {
       buyerId: "buyer_ext_009",
       total: 1900,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 144),
+      createdAt: hoursAgo(144),
       sellerId: seller1.id,
       items: [{ product: p1[7], quantity: 1 }],
+    },
+    // Entregadas — cola larga en los últimos ~3 meses (da forma a un gráfico de tendencia)
+    {
+      buyerOrderId: "ord_s1_010",
+      buyerId: "buyer_ext_031",
+      total: 4400,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(12),
+      sellerId: seller1.id,
+      items: [{ product: p1[1], quantity: 2 }],
+    },
+    {
+      buyerOrderId: "ord_s1_011",
+      buyerId: "buyer_ext_032",
+      total: 1500,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(15),
+      sellerId: seller1.id,
+      items: [{ product: p1[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_012",
+      buyerId: "buyer_ext_033",
+      total: 9100,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(18),
+      sellerId: seller1.id,
+      items: [{ product: p1[5], quantity: 1 }, { product: p1[10], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_013",
+      buyerId: "buyer_ext_034",
+      total: 2400,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(22),
+      sellerId: seller1.id,
+      items: [{ product: p1[3], quantity: 2 }],
+    },
+    {
+      buyerOrderId: "ord_s1_014",
+      buyerId: "buyer_ext_035",
+      total: 3400,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(27),
+      sellerId: seller1.id,
+      items: [{ product: p1[1], quantity: 1 }, { product: p1[2], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_015",
+      buyerId: "buyer_ext_036",
+      total: 6800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(34),
+      sellerId: seller1.id,
+      items: [{ product: p1[5], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_016",
+      buyerId: "buyer_ext_037",
+      total: 1700,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(39),
+      sellerId: seller1.id,
+      items: [{ product: p1[9], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_017",
+      buyerId: "buyer_ext_038",
+      total: 4700,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(45),
+      sellerId: seller1.id,
+      items: [{ product: p1[4], quantity: 1 }, { product: p1[2], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_018",
+      buyerId: "buyer_ext_039",
+      total: 3200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(52),
+      sellerId: seller1.id,
+      items: [{ product: p1[6], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_019",
+      buyerId: "buyer_ext_040",
+      total: 2200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(58),
+      sellerId: seller1.id,
+      items: [{ product: p1[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_020",
+      buyerId: "buyer_ext_041",
+      total: 1900,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(65),
+      sellerId: seller1.id,
+      items: [{ product: p1[7], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_021",
+      buyerId: "buyer_ext_042",
+      total: 8200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(71),
+      sellerId: seller1.id,
+      items: [{ product: p1[5], quantity: 1 }, { product: p1[3], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_022",
+      buyerId: "buyer_ext_043",
+      total: 1500,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(78),
+      sellerId: seller1.id,
+      items: [{ product: p1[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_023",
+      buyerId: "buyer_ext_044",
+      total: 3200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(85),
+      sellerId: seller1.id,
+      items: [{ product: p1[6], quantity: 1 }],
     },
   ];
 
@@ -779,7 +1013,7 @@ async function main() {
       buyerId: "buyer_ext_010",
       total: 9450,
       status: IncomingOrderStatus.recibida,
-      createdAt: new Date(Date.now() - 1000 * 60 * 45),
+      createdAt: hoursAgo(0.75),
       sellerId: seller2.id,
       items: [{ product: p2[0], quantity: 1 }, { product: p2[2], quantity: 1 }],
     },
@@ -788,7 +1022,7 @@ async function main() {
       buyerId: "buyer_ext_011",
       total: 6200,
       status: IncomingOrderStatus.pendiente,
-      createdAt: new Date(Date.now() - 1000 * 60 * 10),
+      createdAt: hoursAgo(0.16),
       sellerId: seller2.id,
       items: [{ product: p2[1], quantity: 2 }],
     },
@@ -797,7 +1031,7 @@ async function main() {
       buyerId: "buyer_ext_012",
       total: 5200,
       status: IncomingOrderStatus.en_preparacion,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 4),
+      createdAt: hoursAgo(4),
       sellerId: seller2.id,
       items: [{ product: p2[4], quantity: 1 }],
     },
@@ -806,7 +1040,7 @@ async function main() {
       buyerId: "buyer_ext_013",
       total: 2200,
       status: IncomingOrderStatus.listo,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12),
+      createdAt: hoursAgo(12),
       sellerId: seller2.id,
       items: [{ product: p2[3], quantity: 2 }],
     },
@@ -815,7 +1049,7 @@ async function main() {
       buyerId: "buyer_ext_014",
       total: 950,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 36),
+      createdAt: hoursAgo(36),
       sellerId: seller2.id,
       items: [{ product: p2[2], quantity: 1 }],
     },
@@ -824,7 +1058,7 @@ async function main() {
       buyerId: "buyer_ext_015",
       total: 14600,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 60),
+      createdAt: hoursAgo(60),
       sellerId: seller2.id,
       items: [{ product: p2[5], quantity: 1 }, { product: p2[0], quantity: 1 }],
     },
@@ -833,9 +1067,37 @@ async function main() {
       buyerId: "buyer_ext_016",
       total: 4900,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 84),
+      createdAt: hoursAgo(84),
       sellerId: seller2.id,
       items: [{ product: p2[7], quantity: 1 }, { product: p2[8], quantity: 1 }],
+    },
+    // Cola más corta en el tiempo que seller1 → menor volumen total (asimetría real entre sellers)
+    {
+      buyerOrderId: "ord_s2_008",
+      buyerId: "buyer_ext_045",
+      total: 3100,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(20),
+      sellerId: seller2.id,
+      items: [{ product: p2[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s2_009",
+      buyerId: "buyer_ext_046",
+      total: 8500,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(40),
+      sellerId: seller2.id,
+      items: [{ product: p2[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s2_010",
+      buyerId: "buyer_ext_047",
+      total: 1900,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(63),
+      sellerId: seller2.id,
+      items: [{ product: p2[6], quantity: 1 }, { product: p2[8], quantity: 1 }],
     },
   ];
 
@@ -849,7 +1111,7 @@ async function main() {
       buyerId: "buyer_ext_017",
       total: 9200,
       status: IncomingOrderStatus.pendiente,
-      createdAt: new Date(Date.now() - 1000 * 60 * 15),
+      createdAt: hoursAgo(0.25),
       sellerId: seller3.id,
       items: [{ product: p3[0], quantity: 1 }],
     },
@@ -858,7 +1120,7 @@ async function main() {
       buyerId: "buyer_ext_018",
       total: 3350,
       status: IncomingOrderStatus.recibida,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3),
+      createdAt: hoursAgo(3),
       sellerId: seller3.id,
       items: [{ product: p3[2], quantity: 1 }, { product: p3[1], quantity: 1 }],
     },
@@ -867,7 +1129,7 @@ async function main() {
       buyerId: "buyer_ext_019",
       total: 11000,
       status: IncomingOrderStatus.en_preparacion,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8),
+      createdAt: hoursAgo(8),
       sellerId: seller3.id,
       items: [{ product: p3[7], quantity: 2 }],
     },
@@ -876,7 +1138,7 @@ async function main() {
       buyerId: "buyer_ext_020",
       total: 4100,
       status: IncomingOrderStatus.listo,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 20),
+      createdAt: hoursAgo(20),
       sellerId: seller3.id,
       items: [{ product: p3[3], quantity: 1 }],
     },
@@ -885,7 +1147,7 @@ async function main() {
       buyerId: "buyer_ext_021",
       total: 8200,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 50),
+      createdAt: hoursAgo(50),
       sellerId: seller3.id,
       items: [{ product: p3[3], quantity: 2 }],
     },
@@ -894,7 +1156,7 @@ async function main() {
       buyerId: "buyer_ext_022",
       total: 6100,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 75),
+      createdAt: hoursAgo(75),
       sellerId: seller3.id,
       items: [{ product: p3[5], quantity: 1 }, { product: p3[4], quantity: 1 }],
     },
@@ -903,23 +1165,43 @@ async function main() {
       buyerId: "buyer_ext_023",
       total: 1650,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 100),
+      createdAt: hoursAgo(100),
       sellerId: seller3.id,
       items: [{ product: p3[1], quantity: 3 }],
+    },
+    {
+      buyerOrderId: "ord_s3_008",
+      buyerId: "buyer_ext_048",
+      total: 5500,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(25),
+      sellerId: seller3.id,
+      items: [{ product: p3[7], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s3_009",
+      buyerId: "buyer_ext_049",
+      total: 2750,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(48),
+      sellerId: seller3.id,
+      items: [{ product: p3[2], quantity: 1 }],
     },
   ];
 
   for (const o of ordenesS3) await crearOrden(o);
   console.log("✅ Pedidos de Botánica Fernández creados");
 
-  // ─── Pedidos — Plantas del Mar (seller4) ─────────────────────────────────────
+  // ─── Pedidos — Plantas del Mar (seller4) — "low performer" ───────────────────
+  // Mantenemos a este seller con el volumen más bajo y sin historia profunda,
+  // para tener un ejemplo de vendedor de bajo desempeño en los rankings.
   const ordenesS4: OrderSeed[] = [
     {
       buyerOrderId: "ord_s4_001",
       buyerId: "buyer_ext_024",
       total: 7600,
       status: IncomingOrderStatus.recibida,
-      createdAt: new Date(Date.now() - 1000 * 60 * 90),
+      createdAt: hoursAgo(1.5),
       sellerId: seller4.id,
       items: [{ product: p4[2], quantity: 1 }, { product: p4[3], quantity: 1 }],
     },
@@ -928,7 +1210,7 @@ async function main() {
       buyerId: "buyer_ext_025",
       total: 4300,
       status: IncomingOrderStatus.pendiente,
-      createdAt: new Date(Date.now() - 1000 * 60 * 25),
+      createdAt: hoursAgo(0.4),
       sellerId: seller4.id,
       items: [{ product: p4[1], quantity: 2 }, { product: p4[4], quantity: 1 }],
     },
@@ -937,7 +1219,7 @@ async function main() {
       buyerId: "buyer_ext_026",
       total: 4500,
       status: IncomingOrderStatus.en_preparacion,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 6),
+      createdAt: hoursAgo(6),
       sellerId: seller4.id,
       items: [{ product: p4[7], quantity: 1 }],
     },
@@ -946,7 +1228,7 @@ async function main() {
       buyerId: "buyer_ext_027",
       total: 2800,
       status: IncomingOrderStatus.listo,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 18),
+      createdAt: hoursAgo(18),
       sellerId: seller4.id,
       items: [{ product: p4[5], quantity: 2 }],
     },
@@ -955,7 +1237,7 @@ async function main() {
       buyerId: "buyer_ext_028",
       total: 1300,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 30),
+      createdAt: hoursAgo(30),
       sellerId: seller4.id,
       items: [{ product: p4[0], quantity: 1 }],
     },
@@ -964,7 +1246,7 @@ async function main() {
       buyerId: "buyer_ext_029",
       total: 3200,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 55),
+      createdAt: hoursAgo(55),
       sellerId: seller4.id,
       items: [{ product: p4[3], quantity: 2 }],
     },
@@ -973,17 +1255,31 @@ async function main() {
       buyerId: "buyer_ext_030",
       total: 5900,
       status: IncomingOrderStatus.entregada,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 80),
+      createdAt: hoursAgo(80),
       sellerId: seller4.id,
       items: [{ product: p4[2], quantity: 1 }, { product: p4[4], quantity: 1 }, { product: p4[6], quantity: 2 }],
+    },
+    // Un único pedido "viejo" para que el seller no quede con cero historia anterior a la semana actual
+    {
+      buyerOrderId: "ord_s4_008",
+      buyerId: "buyer_ext_050",
+      total: 2400,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(55),
+      sellerId: seller4.id,
+      items: [{ product: p4[5], quantity: 1 }],
     },
   ];
 
   for (const o of ordenesS4) await crearOrden(o);
   console.log("✅ Pedidos de Plantas del Mar creados");
 
+  // Nota: seller5 (Jardín Suspendido) intencionalmente no tiene pedidos —
+  // representa un vendedor recién suspendido sin actividad reciente.
+
   // ─── Acreditaciones ──────────────────────────────────────────────────────────
-  // Una PayoutNotification por cada orden entregada
+  // Una PayoutNotification por cada orden entregada (incluye también las nuevas
+  // órdenes históricas agregadas más arriba, para que payouts y pedidos cuadren).
 
   const payouts: {
     sellerId: number;
@@ -992,24 +1288,48 @@ async function main() {
     read: boolean;
     createdAt: Date;
   }[] = [
-    // seller1 — entregadas: s1_005, s1_006, s1_007, s1_008, s1_009
-    { sellerId: seller1.id, paymentId: "pay_s1_005", amount: 3200, read: true,  createdAt: new Date(Date.now() - 1000 * 60 * 60 * 49) },
-    { sellerId: seller1.id, paymentId: "pay_s1_006", amount: 2300, read: true,  createdAt: new Date(Date.now() - 1000 * 60 * 60 * 73) },
-    { sellerId: seller1.id, paymentId: "pay_s1_007", amount: 1600, read: false, createdAt: new Date(Date.now() - 1000 * 60 * 60 * 97) },
-    { sellerId: seller1.id, paymentId: "pay_s1_008", amount: 5700, read: true,  createdAt: new Date(Date.now() - 1000 * 60 * 60 * 121) },
-    { sellerId: seller1.id, paymentId: "pay_s1_009", amount: 1900, read: false, createdAt: new Date(Date.now() - 1000 * 60 * 60 * 145) },
-    // seller2 — entregadas: s2_005, s2_006, s2_007
-    { sellerId: seller2.id, paymentId: "pay_s2_005", amount: 950,   read: true,  createdAt: new Date(Date.now() - 1000 * 60 * 60 * 37) },
-    { sellerId: seller2.id, paymentId: "pay_s2_006", amount: 14600, read: true,  createdAt: new Date(Date.now() - 1000 * 60 * 60 * 61) },
-    { sellerId: seller2.id, paymentId: "pay_s2_007", amount: 4900,  read: false, createdAt: new Date(Date.now() - 1000 * 60 * 60 * 85) },
-    // seller3 — entregadas: s3_005, s3_006, s3_007
-    { sellerId: seller3.id, paymentId: "pay_s3_005", amount: 8200,  read: false, createdAt: new Date(Date.now() - 1000 * 60 * 60 * 51) },
-    { sellerId: seller3.id, paymentId: "pay_s3_006", amount: 6100,  read: true,  createdAt: new Date(Date.now() - 1000 * 60 * 60 * 76) },
-    { sellerId: seller3.id, paymentId: "pay_s3_007", amount: 1650,  read: false, createdAt: new Date(Date.now() - 1000 * 60 * 60 * 101) },
-    // seller4 — entregadas: s4_005, s4_006, s4_007
-    { sellerId: seller4.id, paymentId: "pay_s4_005", amount: 1300,  read: true,  createdAt: new Date(Date.now() - 1000 * 60 * 60 * 31) },
-    { sellerId: seller4.id, paymentId: "pay_s4_006", amount: 3200,  read: true,  createdAt: new Date(Date.now() - 1000 * 60 * 60 * 56) },
-    { sellerId: seller4.id, paymentId: "pay_s4_007", amount: 5900,  read: false, createdAt: new Date(Date.now() - 1000 * 60 * 60 * 81) },
+    // seller1 — entregadas recientes: s1_005..s1_009
+    { sellerId: seller1.id, paymentId: "pay_s1_005", amount: 3200, read: true,  createdAt: hoursAgo(49) },
+    { sellerId: seller1.id, paymentId: "pay_s1_006", amount: 2300, read: true,  createdAt: hoursAgo(73) },
+    { sellerId: seller1.id, paymentId: "pay_s1_007", amount: 1600, read: false, createdAt: hoursAgo(97) },
+    { sellerId: seller1.id, paymentId: "pay_s1_008", amount: 5700, read: true,  createdAt: hoursAgo(121) },
+    { sellerId: seller1.id, paymentId: "pay_s1_009", amount: 1900, read: false, createdAt: hoursAgo(145) },
+    // seller1 — entregadas históricas: s1_010..s1_023
+    { sellerId: seller1.id, paymentId: "pay_s1_010", amount: 4400, read: true,  createdAt: daysAgo(12, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_011", amount: 1500, read: true,  createdAt: daysAgo(15, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_012", amount: 9100, read: true,  createdAt: daysAgo(18, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_013", amount: 2400, read: true,  createdAt: daysAgo(22, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_014", amount: 3400, read: true,  createdAt: daysAgo(27, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_015", amount: 6800, read: true,  createdAt: daysAgo(34, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_016", amount: 1700, read: true,  createdAt: daysAgo(39, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_017", amount: 4700, read: true,  createdAt: daysAgo(45, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_018", amount: 3200, read: true,  createdAt: daysAgo(52, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_019", amount: 2200, read: true,  createdAt: daysAgo(58, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_020", amount: 1900, read: true,  createdAt: daysAgo(65, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_021", amount: 8200, read: true,  createdAt: daysAgo(71, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_022", amount: 1500, read: true,  createdAt: daysAgo(78, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_023", amount: 3200, read: true,  createdAt: daysAgo(85, 13) },
+    // seller2 — entregadas: s2_005..s2_007
+    { sellerId: seller2.id, paymentId: "pay_s2_005", amount: 950,   read: true,  createdAt: hoursAgo(37) },
+    { sellerId: seller2.id, paymentId: "pay_s2_006", amount: 14600, read: true,  createdAt: hoursAgo(61) },
+    { sellerId: seller2.id, paymentId: "pay_s2_007", amount: 4900,  read: false, createdAt: hoursAgo(85) },
+    // seller2 — históricas: s2_008..s2_010
+    { sellerId: seller2.id, paymentId: "pay_s2_008", amount: 3100,  read: true,  createdAt: daysAgo(20, 13) },
+    { sellerId: seller2.id, paymentId: "pay_s2_009", amount: 8500,  read: true,  createdAt: daysAgo(40, 13) },
+    { sellerId: seller2.id, paymentId: "pay_s2_010", amount: 1900,  read: true,  createdAt: daysAgo(63, 13) },
+    // seller3 — entregadas: s3_005..s3_007
+    { sellerId: seller3.id, paymentId: "pay_s3_005", amount: 8200,  read: false, createdAt: hoursAgo(51) },
+    { sellerId: seller3.id, paymentId: "pay_s3_006", amount: 6100,  read: true,  createdAt: hoursAgo(76) },
+    { sellerId: seller3.id, paymentId: "pay_s3_007", amount: 1650,  read: false, createdAt: hoursAgo(101) },
+    // seller3 — históricas: s3_008..s3_009
+    { sellerId: seller3.id, paymentId: "pay_s3_008", amount: 5500,  read: true,  createdAt: daysAgo(25, 13) },
+    { sellerId: seller3.id, paymentId: "pay_s3_009", amount: 2750,  read: true,  createdAt: daysAgo(48, 13) },
+    // seller4 — entregadas: s4_005..s4_007
+    { sellerId: seller4.id, paymentId: "pay_s4_005", amount: 1300,  read: true,  createdAt: hoursAgo(31) },
+    { sellerId: seller4.id, paymentId: "pay_s4_006", amount: 3200,  read: true,  createdAt: hoursAgo(56) },
+    { sellerId: seller4.id, paymentId: "pay_s4_007", amount: 5900,  read: false, createdAt: hoursAgo(81) },
+    // seller4 — histórica: s4_008
+    { sellerId: seller4.id, paymentId: "pay_s4_008", amount: 2400,  read: true,  createdAt: daysAgo(55, 13) },
   ];
 
   await Promise.all(
@@ -1024,10 +1344,10 @@ async function main() {
   console.log("🌿 Seed completado con éxito");
   console.log("");
   console.log("📋 Resumen:");
-  console.log("   4 sellers (usuarios reales de Clerk)");
-  console.log("   35 productos en total");
-  console.log("   30 pedidos en total (todos los estados cubiertos)");
-  console.log("   14 acreditaciones");
+  console.log("   5 sellers (4 activos + 1 inactivo/suspendido)");
+  console.log("   39 productos en total (incluye 2 sin ventas y 2 del seller suspendido)");
+  console.log("   43 pedidos en total, distribuidos en ~90 días (todos los estados cubiertos)");
+  console.log("   33 acreditaciones");
 }
 
 main()
