@@ -79,3 +79,24 @@ export function IconUser({ size = 20 }: IconProps) {
     </svg>
   );
 }
+
+export function IconUserEdit({ size = 20 }: IconProps) {
+  return (
+    <svg {...defaultProps(size)}>
+      <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10z"/>
+      <path d="M3 21v-1a7 7 0 0 1 7-7h2"/>
+      <path d="M16.5 15.5l4 4"/>
+      <path d="M18 14a2.121 2.121 0 0 1 3 3l-4.5 4.5-3.5.5.5-3.5 4.5-4.5z"/>
+    </svg>
+  );
+}
+
+export function IconWallet({ size = 20 }: IconProps) {
+  return (
+    <svg {...defaultProps(size)}>
+      <rect x="2" y="6" width="20" height="14" rx="2"/>
+      <path d="M2 10h20"/>
+      <circle cx="16" cy="15" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+  );
+}

@@ -3,7 +3,7 @@ import { getOrCreateSeller } from "@/lib/seller";
 import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { statusLabels, statusColors } from "@/lib/constants";
-import { IconBox, IconPlant, IconAlert } from "@/components/icons";
+import { IconBox, IconPlant, IconAlert, IconUserEdit, IconWallet } from "@/components/icons";
 import StatCard from "@/components/StatCard";
 
 export default async function DashboardPage() {
@@ -45,19 +45,32 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--color-verde-profundo)]">
-            Bienvenida, {seller.name}
-          </h1>
-          <p className="text-gray-500">Panel de vendedor</p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold text-[var(--color-verde-profundo)]">
+          Bienvenida, {seller.name}
+        </h1>
+        <p className="text-gray-500">Panel de vendedor</p>
+      </div>
+
+      <div className="flex items-center gap-2">
         <a
           href="/dashboard/profile"
           className="flex items-center gap-2 text-sm font-medium text-[var(--color-verde-bosque)] border border-[var(--color-verde-bosque)] rounded-lg px-4 py-2 hover:bg-[var(--color-verde-bosque)] hover:text-white transition-colors"
         >
-          👤 Editar perfil
+          <IconUserEdit size={16} />
+          Editar perfil
+        </a>
+        <a
+          href={`${process.env.PAYMENTS_APP_URL}/payouts`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-sm font-medium text-[var(--color-verde-bosque)] border border-[var(--color-verde-bosque)] rounded-lg px-4 py-2 hover:bg-[var(--color-verde-bosque)] hover:text-white transition-colors"
+        >
+          <IconWallet size={16} />
+          Ver pagos
         </a>
       </div>
+    </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard
