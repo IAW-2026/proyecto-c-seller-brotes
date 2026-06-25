@@ -28,6 +28,10 @@ export async function createProduct(formData: FormData) {
   const imageFile = formData.get("imagen") as File | null;
   let imageUrl: string | null = null;
 
+  if (!name || !category || isNaN(price) || isNaN(stockAvailable)) {
+    throw new Error("Faltan campos obligatorios");
+  }
+
   if (imageFile && imageFile.size > 0) {
   const arrayBuffer = await imageFile.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
@@ -37,10 +41,6 @@ export async function createProduct(formData: FormData) {
   });
   imageUrl = result.secure_url;
 }
-
-  if (!name || !category || isNaN(price) || isNaN(stockAvailable)) {
-    throw new Error("Faltan campos obligatorios");
-  }
 
   await prisma.product.create({
     data: {
@@ -97,7 +97,7 @@ export async function updateProduct(id: number, formData: FormData) {
       category,
       price,
       stockAvailable ,
-      imageUrl: imageUrl || null,
+      imageUrl: imageUrl ?? undefined,
     },
   });
 
