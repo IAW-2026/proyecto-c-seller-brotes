@@ -6,9 +6,14 @@ import { useRef } from "react";
 export default function UserMenu() {
   const triggerRef = useRef<HTMLDivElement>(null);
 
-  const handleClick = () => {
-    const button = triggerRef.current?.querySelector("button");
-    button?.click();
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+
+    const clerkButton = triggerRef.current?.querySelector("button");
+    if (clerkButton && clerkButton.contains(e.target as Node)) {
+      return;
+    }
+
+    clerkButton?.click();
   };
 
   return (
