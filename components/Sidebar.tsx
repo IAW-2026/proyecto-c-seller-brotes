@@ -41,7 +41,7 @@ export default function Sidebar({ links, subtitle, bottom }: SidebarProps) {
             href={link.href}
             exact={link.exact}
             icon={link.icon}
-            external={link.external}   {/* <- si falta esta línea, external siempre es undefined */}
+            external={link.external}
           >
             {link.label}
           </NavLink>
