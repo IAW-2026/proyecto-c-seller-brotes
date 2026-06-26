@@ -76,6 +76,15 @@ export async function POST(
         });
       }
 
+      // Borrar primero los items hijos para no violar el FK constraint
+      const deletedItems = await tx.incomingOrderItem.deleteMany({
+        where: { incomingOrderId: order.id },
+      });
+      console.log("[stock-reservations/reject] items eliminados", {
+        orderId: order.id,
+        count: deletedItems.count,
+      });
+
       await tx.incomingOrder.delete({ where: { buyerOrderId: id } });
       console.log("[stock-reservations/reject] incomingOrder eliminada", { buyerOrderId: id });
     });
