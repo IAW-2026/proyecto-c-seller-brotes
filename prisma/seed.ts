@@ -161,7 +161,7 @@ async function main() {
         stockReserved: 0,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1567611663076-424b8d73e65b?w=400",
+          "https://images.unsplash.com/photo-1509937528035-ad76254b0356?w=400",
       },
     }),
     prisma.product.create({
@@ -206,7 +206,7 @@ async function main() {
         stockReserved: 1,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1590502593747-42a996133562?w=400",
+          "https://images.unsplash.com/photo-1526438281712-35d96b8586e5?w=400",
       },
     }),
     prisma.product.create({
@@ -266,7 +266,7 @@ async function main() {
         stockReserved: 0,
         status: ProductStatus.inactive,
         imageUrl:
-          "https://images.unsplash.com/photo-1527324688151-0e627063f2b1?w=400",
+          "https://images.unsplash.com/photo-1500420254515-0faefa2dac99?w=400",
       },
     }),
     prisma.product.create({
@@ -281,7 +281,7 @@ async function main() {
         stockReserved: 0,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1567611663076-424b8d73e65b?w=400",
+          "https://images.unsplash.com/photo-1509937528035-ad76254b0356?w=400",
       },
     }),
     // Nuevo: producto de catálogo sin ninguna venta — para reportes de
@@ -334,7 +334,7 @@ async function main() {
         stockReserved: 0,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400",
+          "https://images.unsplash.com/photo-1664994831961-3ae7deb6579a?w=400",
       },
     }),
     prisma.product.create({
@@ -349,7 +349,7 @@ async function main() {
         stockReserved: 2,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1515586838455-8a8a9b7ed5e6?w=400",
+          "https://images.unsplash.com/photo-1603129624917-3c579e864025?w=400",
       },
     }),
     prisma.product.create({
@@ -439,7 +439,7 @@ async function main() {
         stockReserved: 0,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1515586838455-8a8a9b7ed5e6?w=400",
+          "https://images.unsplash.com/photo-1769424052062-4147fa752156?w=400",
       },
     }),
     // Nuevo: segundo producto sin ventas para Verde Córdoba.
@@ -476,7 +476,7 @@ async function main() {
         stockReserved: 1,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=400",
+          "https://images.unsplash.com/photo-1592064465579-6796bfdaa5cd?w=400",
       },
     }),
     prisma.product.create({
@@ -536,7 +536,7 @@ async function main() {
         stockReserved: 0,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1590502593747-42a996133562?w=400",
+          "https://images.unsplash.com/photo-1659817675180-bcdc5bd6ba46?w=400",
       },
     }),
     prisma.product.create({
@@ -566,7 +566,7 @@ async function main() {
         stockReserved: 0,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1567611663076-424b8d73e65b?w=400",
+          "https://images.unsplash.com/photo-1509937528035-ad76254b0356?w=400",
       },
     }),
     prisma.product.create({
@@ -617,7 +617,7 @@ async function main() {
         stockReserved: 2,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1567611663076-424b8d73e65b?w=400",
+          "https://images.unsplash.com/photo-1509937528035-ad76254b0356?w=400",
       },
     }),
     prisma.product.create({
@@ -632,7 +632,7 @@ async function main() {
         stockReserved: 1,
         status: ProductStatus.active,
         imageUrl:
-          "https://images.unsplash.com/photo-1547514701-42782101795e?w=400",
+          "https://images.unsplash.com/photo-1643485971934-1cbbd1907b78?w=400",
       },
     }),
     prisma.product.create({
@@ -746,7 +746,7 @@ async function main() {
         stockReserved: 0,
         status: ProductStatus.inactive,
         imageUrl:
-          "https://images.unsplash.com/photo-1567611663076-424b8d73e65b?w=400",
+          "https://images.unsplash.com/photo-1509937528035-ad76254b0356?w=400",
       },
     }),
   ]);
