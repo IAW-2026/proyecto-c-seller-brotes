@@ -36,7 +36,13 @@ export default function Sidebar({ links, subtitle, bottom }: SidebarProps) {
       </div>
       <nav className="flex flex-row md:flex-col gap-2">
         {links.map((link) => (
-          <NavLink key={link.href} href={link.href} exact={link.exact} icon={link.icon}>
+          <NavLink
+            key={link.href}
+            href={link.href}
+            exact={link.exact}
+            icon={link.icon}
+            external={link.external}   {/* <- si falta esta línea, external siempre es undefined */}
+          >
             {link.label}
           </NavLink>
         ))}
