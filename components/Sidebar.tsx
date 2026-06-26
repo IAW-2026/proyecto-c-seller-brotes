@@ -7,6 +7,7 @@ export interface SidebarLink {
   label: string;
   exact?: boolean;
   icon: React.ReactNode;
+  external?: boolean; 
 }
 
 interface SidebarProps {
