@@ -130,6 +130,64 @@ async function main() {
     },
   });
 
+  // ─── Sellers nuevos (activos) — suman volumen y variedad geográfica ──────────
+  const seller6 = await prisma.seller.upsert({
+    where: { clerkUserId: "user_3EZ1aBcDeFgHiJkLmNoPqRsTu01" },
+    update: {
+      name: "Raíces del Litoral",
+      email: "seller6+clerktest@iaw.com",
+      city: "Santa Fe",
+      address: "Bv. Gálvez 2100, Santa Fe",
+      status: SellerStatus.active,
+    },
+    create: {
+      clerkUserId: "user_3EZ1aBcDeFgHiJkLmNoPqRsTu01",
+      name: "Raíces del Litoral",
+      email: "seller6+clerktest@iaw.com",
+      city: "Santa Fe",
+      address: "Bv. Gálvez 2100, Santa Fe",
+      status: SellerStatus.active,
+    },
+  });
+
+  const seller7 = await prisma.seller.upsert({
+    where: { clerkUserId: "user_3EZ2bCdEfGhIjKlMnOpQrStUv02" },
+    update: {
+      name: "Vivero Andino",
+      email: "seller7+clerktest@iaw.com",
+      city: "San Salvador de Jujuy",
+      address: "Av. Senador Pérez 340, Jujuy",
+      status: SellerStatus.active,
+    },
+    create: {
+      clerkUserId: "user_3EZ2bCdEfGhIjKlMnOpQrStUv02",
+      name: "Vivero Andino",
+      email: "seller7+clerktest@iaw.com",
+      city: "San Salvador de Jujuy",
+      address: "Av. Senador Pérez 340, Jujuy",
+      status: SellerStatus.active,
+    },
+  });
+
+  const seller8 = await prisma.seller.upsert({
+    where: { clerkUserId: "user_3EZ3cDeFgHiJkLmNoPqRsTuVw03" },
+    update: {
+      name: "Patagonia Verde",
+      email: "seller8+clerktest@iaw.com",
+      city: "Bariloche",
+      address: "Av. Bustillo 7800, Bariloche",
+      status: SellerStatus.active,
+    },
+    create: {
+      clerkUserId: "user_3EZ3cDeFgHiJkLmNoPqRsTuVw03",
+      name: "Patagonia Verde",
+      email: "seller8+clerktest@iaw.com",
+      city: "Bariloche",
+      address: "Av. Bustillo 7800, Bariloche",
+      status: SellerStatus.active,
+    },
+  });
+
   console.log("✅ Sellers creados");
 
   // ─── Productos — Vivero Giménez (seller1) ────────────────────────────────────
@@ -754,6 +812,264 @@ async function main() {
 
   console.log("✅ Productos de Jardín Suspendido creados (seller inactivo)");
 
+  // ─── Productos — Raíces del Litoral (seller6) ────────────────────────────────
+  const p6 = await Promise.all([
+    prisma.product.create({
+      data: {
+        sellerId: seller6.id,
+        name: "Aloe Vera",
+        description:
+          "Suculenta medicinal de hojas carnosas con gel cicatrizante. Muy resistente y de bajo mantenimiento.",
+        category: ProductCategory.suculentas,
+        price: 1100,
+        stockAvailable: 18,
+        stockReserved: 1,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller6.id,
+        name: "Palo Borracho Enano",
+        description:
+          "Árbol nativo en versión de maceta para balcón. Floración rosada vistosa en otoño.",
+        category: ProductCategory.colecciones_raras,
+        price: 5800,
+        stockAvailable: 4,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1592064465579-6796bfdaa5cd?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller6.id,
+        name: "Orégano Criollo",
+        description:
+          "Aromática de uso culinario muy resistente al calor litoraleño. Ideal para maceta de cocina.",
+        category: ProductCategory.aromaticas,
+        price: 520,
+        stockAvailable: 26,
+        stockReserved: 2,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1500420254515-0faefa2dac99?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller6.id,
+        name: "Pomelo Rosado",
+        description:
+          "Frutal cítrico de pulpa rosada y sabor dulce-amargo. Necesita clima templado y riego regular.",
+        category: ProductCategory.frutales,
+        price: 4800,
+        stockAvailable: 5,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1526438281712-35d96b8586e5?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller6.id,
+        name: "Cactus Echinopsis",
+        description:
+          "Cactus globular con flores grandes y perfumadas que se abren de noche. Muy fácil de cuidar.",
+        category: ProductCategory.cactus,
+        price: 1900,
+        stockAvailable: 9,
+        stockReserved: 1,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1509937528035-ad76254b0356?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller6.id,
+        name: "Kit Macetas Colgantes x2",
+        description:
+          "Dos macetas de fibra colgantes con ganchos incluidos. Ideales para plantas trepadoras o colgantes.",
+        category: ProductCategory.macetas_y_kits,
+        price: 2400,
+        stockAvailable: 11,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=400",
+      },
+    }),
+  ]);
+
+  console.log("✅ Productos de Raíces del Litoral creados");
+
+  // ─── Productos — Vivero Andino (seller7) ─────────────────────────────────────
+  const p7 = await Promise.all([
+    prisma.product.create({
+      data: {
+        sellerId: seller7.id,
+        name: "Cardón Andino",
+        description:
+          "Cactus columnar típico del noroeste argentino. Crecimiento muy lento y gran longevidad.",
+        category: ProductCategory.cactus,
+        price: 3600,
+        stockAvailable: 6,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1509937528035-ad76254b0356?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller7.id,
+        name: "Suculenta Sedum Rupestre",
+        description:
+          "Cubresuelos suculento de hojas azuladas en forma de estrella. Ideal para rocallas de altura.",
+        category: ProductCategory.suculentas,
+        price: 750,
+        stockAvailable: 20,
+        stockReserved: 2,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller7.id,
+        name: "Pimiento Andino Ornamental",
+        description:
+          "Planta de frutos pequeños y coloridos, comestible y decorativa. Resiste bien la altura y el sol intenso.",
+        category: ProductCategory.colecciones_raras,
+        price: 1450,
+        stockAvailable: 10,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1592064465579-6796bfdaa5cd?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller7.id,
+        name: "Coca Ornamental",
+        description:
+          "Arbusto de hojas brillantes usado como planta ornamental de interior luminoso.",
+        category: ProductCategory.plantas_de_interior,
+        price: 2700,
+        stockAvailable: 7,
+        stockReserved: 1,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1598880940080-ff9a29891b85?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller7.id,
+        name: "Maceta Cerámica Pintada a Mano",
+        description:
+          "Maceta artesanal con diseños andinos pintados a mano. Disponible en varios tamaños.",
+        category: ProductCategory.macetas_y_kits,
+        price: 1800,
+        stockAvailable: 14,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400",
+      },
+    }),
+  ]);
+
+  console.log("✅ Productos de Vivero Andino creados");
+
+  // ─── Productos — Patagonia Verde (seller8) ───────────────────────────────────
+  const p8 = await Promise.all([
+    prisma.product.create({
+      data: {
+        sellerId: seller8.id,
+        name: "Ciprés Enano",
+        description:
+          "Conífera compacta de follaje denso, resistente al frío patagónico. Ideal para jardines pequeños.",
+        category: ProductCategory.colecciones_raras,
+        price: 4200,
+        stockAvailable: 6,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1592064465579-6796bfdaa5cd?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller8.id,
+        name: "Calafate",
+        description:
+          "Arbusto nativo patagónico de bayas comestibles azuladas. Muy resistente al frío y al viento.",
+        category: ProductCategory.frutales,
+        price: 3300,
+        stockAvailable: 5,
+        stockReserved: 1,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1659817675180-bcdc5bd6ba46?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller8.id,
+        name: "Menta Patagónica",
+        description:
+          "Variedad local de menta de aroma intenso. Crece bien en climas fríos y suelos húmedos.",
+        category: ProductCategory.aromaticas,
+        price: 600,
+        stockAvailable: 17,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1628556270448-4d4e4148e1b1?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller8.id,
+        name: "Suculenta Sempervivum",
+        description:
+          "Roseta perenne extremadamente resistente al frío. Sobrevive nevadas leves sin problema.",
+        category: ProductCategory.suculentas,
+        price: 850,
+        stockAvailable: 15,
+        stockReserved: 0,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1509423350716-97f9360b4e09?w=400",
+      },
+    }),
+    prisma.product.create({
+      data: {
+        sellerId: seller8.id,
+        name: "Kit Jardín de Altura",
+        description:
+          "Set de 3 plantas resistentes a heladas con maceta térmica incluida. Pensado para climas fríos.",
+        category: ProductCategory.macetas_y_kits,
+        price: 3900,
+        stockAvailable: 8,
+        stockReserved: 1,
+        status: ProductStatus.active,
+        imageUrl:
+          "https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=400",
+      },
+    }),
+  ]);
+
+  console.log("✅ Productos de Patagonia Verde creados");
+
   // ─── Helper para crear órdenes ───────────────────────────────────────────────
   type OrderSeed = {
     buyerOrderId: string;
@@ -1001,6 +1317,52 @@ async function main() {
       sellerId: seller1.id,
       items: [{ product: p1[6], quantity: 1 }],
     },
+    // Extensión de historial — completa el rango exigido de 3 meses (>=90 días)
+    {
+      buyerOrderId: "ord_s1_024",
+      buyerId: "buyer_ext_051",
+      total: 2300,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(91),
+      sellerId: seller1.id,
+      items: [{ product: p1[2], quantity: 1 }, { product: p1[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_025",
+      buyerId: "buyer_ext_052",
+      total: 6800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(97),
+      sellerId: seller1.id,
+      items: [{ product: p1[5], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_026",
+      buyerId: "buyer_ext_053",
+      total: 1700,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(103),
+      sellerId: seller1.id,
+      items: [{ product: p1[9], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_027",
+      buyerId: "buyer_ext_054",
+      total: 4500,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(110),
+      sellerId: seller1.id,
+      items: [{ product: p1[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s1_028",
+      buyerId: "buyer_ext_055",
+      total: 3300,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(117),
+      sellerId: seller1.id,
+      items: [{ product: p1[1], quantity: 1 }, { product: p1[2], quantity: 1 }],
+    },
   ];
 
   for (const o of ordenesS1) await crearOrden(o);
@@ -1099,6 +1461,43 @@ async function main() {
       sellerId: seller2.id,
       items: [{ product: p2[6], quantity: 1 }, { product: p2[8], quantity: 1 }],
     },
+    // Extensión de historial — completa el rango exigido de 3 meses (>=90 días)
+    {
+      buyerOrderId: "ord_s2_011",
+      buyerId: "buyer_ext_056",
+      total: 5200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(80),
+      sellerId: seller2.id,
+      items: [{ product: p2[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s2_012",
+      buyerId: "buyer_ext_057",
+      total: 950,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(94),
+      sellerId: seller2.id,
+      items: [{ product: p2[2], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s2_013",
+      buyerId: "buyer_ext_058",
+      total: 12000,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(105),
+      sellerId: seller2.id,
+      items: [{ product: p2[5], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s2_014",
+      buyerId: "buyer_ext_059",
+      total: 2200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(115),
+      sellerId: seller2.id,
+      items: [{ product: p2[3], quantity: 2 }],
+    },
   ];
 
   for (const o of ordenesS2) await crearOrden(o);
@@ -1187,6 +1586,52 @@ async function main() {
       sellerId: seller3.id,
       items: [{ product: p3[2], quantity: 1 }],
     },
+    // Extensión de historial — completa el rango exigido de 3 meses (>=90 días)
+    {
+      buyerOrderId: "ord_s3_010",
+      buyerId: "buyer_ext_060",
+      total: 4100,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(58),
+      sellerId: seller3.id,
+      items: [{ product: p3[3], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s3_011",
+      buyerId: "buyer_ext_061",
+      total: 9200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(72),
+      sellerId: seller3.id,
+      items: [{ product: p3[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s3_012",
+      buyerId: "buyer_ext_062",
+      total: 1650,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(86),
+      sellerId: seller3.id,
+      items: [{ product: p3[1], quantity: 3 }],
+    },
+    {
+      buyerOrderId: "ord_s3_013",
+      buyerId: "buyer_ext_063",
+      total: 5500,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(99),
+      sellerId: seller3.id,
+      items: [{ product: p3[7], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s3_014",
+      buyerId: "buyer_ext_064",
+      total: 2500,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(112),
+      sellerId: seller3.id,
+      items: [{ product: p3[5], quantity: 1 }],
+    },
   ];
 
   for (const o of ordenesS3) await crearOrden(o);
@@ -1269,6 +1714,36 @@ async function main() {
       sellerId: seller4.id,
       items: [{ product: p4[5], quantity: 1 }],
     },
+    // Extensión de historial — completa el rango exigido de 3 meses (>=90 días).
+    // Se agregan menos órdenes que a los demás sellers para mantener a este
+    // seller como el de menor volumen ("low performer") del conjunto.
+    {
+      buyerOrderId: "ord_s4_009",
+      buyerId: "buyer_ext_065",
+      total: 1800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(75),
+      sellerId: seller4.id,
+      items: [{ product: p4[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s4_010",
+      buyerId: "buyer_ext_066",
+      total: 4500,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(93),
+      sellerId: seller4.id,
+      items: [{ product: p4[7], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s4_011",
+      buyerId: "buyer_ext_067",
+      total: 1600,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(113),
+      sellerId: seller4.id,
+      items: [{ product: p4[3], quantity: 1 }],
+    },
   ];
 
   for (const o of ordenesS4) await crearOrden(o);
@@ -1276,6 +1751,495 @@ async function main() {
 
   // Nota: seller5 (Jardín Suspendido) intencionalmente no tiene pedidos —
   // representa un vendedor recién suspendido sin actividad reciente.
+
+  // ─── Pedidos — Raíces del Litoral (seller6) ──────────────────────────────────
+  const ordenesS6: OrderSeed[] = [
+    {
+      buyerOrderId: "ord_s6_001",
+      buyerId: "buyer_ext_068",
+      total: 1100,
+      status: IncomingOrderStatus.pendiente,
+      createdAt: hoursAgo(0.5),
+      sellerId: seller6.id,
+      items: [{ product: p6[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_002",
+      buyerId: "buyer_ext_069",
+      total: 5800,
+      status: IncomingOrderStatus.recibida,
+      createdAt: hoursAgo(3),
+      sellerId: seller6.id,
+      items: [{ product: p6[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_003",
+      buyerId: "buyer_ext_070",
+      total: 1040,
+      status: IncomingOrderStatus.en_preparacion,
+      createdAt: hoursAgo(10),
+      sellerId: seller6.id,
+      items: [{ product: p6[2], quantity: 2 }],
+    },
+    {
+      buyerOrderId: "ord_s6_004",
+      buyerId: "buyer_ext_071",
+      total: 4800,
+      status: IncomingOrderStatus.listo,
+      createdAt: hoursAgo(22),
+      sellerId: seller6.id,
+      items: [{ product: p6[3], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_005",
+      buyerId: "buyer_ext_072",
+      total: 1900,
+      status: IncomingOrderStatus.entregada,
+      createdAt: hoursAgo(40),
+      sellerId: seller6.id,
+      items: [{ product: p6[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_006",
+      buyerId: "buyer_ext_073",
+      total: 2400,
+      status: IncomingOrderStatus.entregada,
+      createdAt: hoursAgo(70),
+      sellerId: seller6.id,
+      items: [{ product: p6[5], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_007",
+      buyerId: "buyer_ext_074",
+      total: 1100,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(10),
+      sellerId: seller6.id,
+      items: [{ product: p6[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_008",
+      buyerId: "buyer_ext_075",
+      total: 4800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(17),
+      sellerId: seller6.id,
+      items: [{ product: p6[3], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_009",
+      buyerId: "buyer_ext_076",
+      total: 1560,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(24),
+      sellerId: seller6.id,
+      items: [{ product: p6[2], quantity: 3 }],
+    },
+    {
+      buyerOrderId: "ord_s6_010",
+      buyerId: "buyer_ext_077",
+      total: 5800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(31),
+      sellerId: seller6.id,
+      items: [{ product: p6[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_011",
+      buyerId: "buyer_ext_078",
+      total: 1900,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(38),
+      sellerId: seller6.id,
+      items: [{ product: p6[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_012",
+      buyerId: "buyer_ext_079",
+      total: 2400,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(46),
+      sellerId: seller6.id,
+      items: [{ product: p6[5], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_013",
+      buyerId: "buyer_ext_080",
+      total: 1100,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(54),
+      sellerId: seller6.id,
+      items: [{ product: p6[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_014",
+      buyerId: "buyer_ext_081",
+      total: 4800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(63),
+      sellerId: seller6.id,
+      items: [{ product: p6[3], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_015",
+      buyerId: "buyer_ext_082",
+      total: 1900,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(74),
+      sellerId: seller6.id,
+      items: [{ product: p6[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_016",
+      buyerId: "buyer_ext_083",
+      total: 2080,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(88),
+      sellerId: seller6.id,
+      items: [{ product: p6[2], quantity: 4 }],
+    },
+    {
+      buyerOrderId: "ord_s6_017",
+      buyerId: "buyer_ext_084",
+      total: 5800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(101),
+      sellerId: seller6.id,
+      items: [{ product: p6[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s6_018",
+      buyerId: "buyer_ext_085",
+      total: 2400,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(111),
+      sellerId: seller6.id,
+      items: [{ product: p6[5], quantity: 1 }],
+    },
+  ];
+
+  for (const o of ordenesS6) await crearOrden(o);
+  console.log("✅ Pedidos de Raíces del Litoral creados");
+
+  // ─── Pedidos — Vivero Andino (seller7) ───────────────────────────────────────
+  const ordenesS7: OrderSeed[] = [
+    {
+      buyerOrderId: "ord_s7_001",
+      buyerId: "buyer_ext_086",
+      total: 3600,
+      status: IncomingOrderStatus.pendiente,
+      createdAt: hoursAgo(0.6),
+      sellerId: seller7.id,
+      items: [{ product: p7[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_002",
+      buyerId: "buyer_ext_087",
+      total: 750,
+      status: IncomingOrderStatus.recibida,
+      createdAt: hoursAgo(4),
+      sellerId: seller7.id,
+      items: [{ product: p7[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_003",
+      buyerId: "buyer_ext_088",
+      total: 1450,
+      status: IncomingOrderStatus.en_preparacion,
+      createdAt: hoursAgo(14),
+      sellerId: seller7.id,
+      items: [{ product: p7[2], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_004",
+      buyerId: "buyer_ext_089",
+      total: 2700,
+      status: IncomingOrderStatus.listo,
+      createdAt: hoursAgo(26),
+      sellerId: seller7.id,
+      items: [{ product: p7[3], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_005",
+      buyerId: "buyer_ext_090",
+      total: 1800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: hoursAgo(44),
+      sellerId: seller7.id,
+      items: [{ product: p7[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_006",
+      buyerId: "buyer_ext_091",
+      total: 3600,
+      status: IncomingOrderStatus.entregada,
+      createdAt: hoursAgo(66),
+      sellerId: seller7.id,
+      items: [{ product: p7[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_007",
+      buyerId: "buyer_ext_092",
+      total: 1500,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(9),
+      sellerId: seller7.id,
+      items: [{ product: p7[1], quantity: 2 }],
+    },
+    {
+      buyerOrderId: "ord_s7_008",
+      buyerId: "buyer_ext_093",
+      total: 2700,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(16),
+      sellerId: seller7.id,
+      items: [{ product: p7[3], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_009",
+      buyerId: "buyer_ext_094",
+      total: 1450,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(23),
+      sellerId: seller7.id,
+      items: [{ product: p7[2], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_010",
+      buyerId: "buyer_ext_095",
+      total: 3600,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(30),
+      sellerId: seller7.id,
+      items: [{ product: p7[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_011",
+      buyerId: "buyer_ext_096",
+      total: 1800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(37),
+      sellerId: seller7.id,
+      items: [{ product: p7[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_012",
+      buyerId: "buyer_ext_097",
+      total: 750,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(47),
+      sellerId: seller7.id,
+      items: [{ product: p7[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_013",
+      buyerId: "buyer_ext_098",
+      total: 2900,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(57),
+      sellerId: seller7.id,
+      items: [{ product: p7[2], quantity: 2 }],
+    },
+    {
+      buyerOrderId: "ord_s7_014",
+      buyerId: "buyer_ext_099",
+      total: 2700,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(68),
+      sellerId: seller7.id,
+      items: [{ product: p7[3], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_015",
+      buyerId: "buyer_ext_100",
+      total: 3600,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(79),
+      sellerId: seller7.id,
+      items: [{ product: p7[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_016",
+      buyerId: "buyer_ext_101",
+      total: 1800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(92),
+      sellerId: seller7.id,
+      items: [{ product: p7[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s7_017",
+      buyerId: "buyer_ext_102",
+      total: 1500,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(108),
+      sellerId: seller7.id,
+      items: [{ product: p7[1], quantity: 2 }],
+    },
+  ];
+
+  for (const o of ordenesS7) await crearOrden(o);
+  console.log("✅ Pedidos de Vivero Andino creados");
+
+  // ─── Pedidos — Patagonia Verde (seller8) ─────────────────────────────────────
+  const ordenesS8: OrderSeed[] = [
+    {
+      buyerOrderId: "ord_s8_001",
+      buyerId: "buyer_ext_103",
+      total: 4200,
+      status: IncomingOrderStatus.pendiente,
+      createdAt: hoursAgo(0.7),
+      sellerId: seller8.id,
+      items: [{ product: p8[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_002",
+      buyerId: "buyer_ext_104",
+      total: 3300,
+      status: IncomingOrderStatus.recibida,
+      createdAt: hoursAgo(5),
+      sellerId: seller8.id,
+      items: [{ product: p8[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_003",
+      buyerId: "buyer_ext_105",
+      total: 600,
+      status: IncomingOrderStatus.en_preparacion,
+      createdAt: hoursAgo(16),
+      sellerId: seller8.id,
+      items: [{ product: p8[2], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_004",
+      buyerId: "buyer_ext_106",
+      total: 850,
+      status: IncomingOrderStatus.listo,
+      createdAt: hoursAgo(28),
+      sellerId: seller8.id,
+      items: [{ product: p8[3], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_005",
+      buyerId: "buyer_ext_107",
+      total: 3900,
+      status: IncomingOrderStatus.entregada,
+      createdAt: hoursAgo(46),
+      sellerId: seller8.id,
+      items: [{ product: p8[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_006",
+      buyerId: "buyer_ext_108",
+      total: 4200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: hoursAgo(68),
+      sellerId: seller8.id,
+      items: [{ product: p8[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_007",
+      buyerId: "buyer_ext_109",
+      total: 1700,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(11),
+      sellerId: seller8.id,
+      items: [{ product: p8[3], quantity: 2 }],
+    },
+    {
+      buyerOrderId: "ord_s8_008",
+      buyerId: "buyer_ext_110",
+      total: 3300,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(19),
+      sellerId: seller8.id,
+      items: [{ product: p8[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_009",
+      buyerId: "buyer_ext_111",
+      total: 1200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(26),
+      sellerId: seller8.id,
+      items: [{ product: p8[2], quantity: 2 }],
+    },
+    {
+      buyerOrderId: "ord_s8_010",
+      buyerId: "buyer_ext_112",
+      total: 3900,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(33),
+      sellerId: seller8.id,
+      items: [{ product: p8[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_011",
+      buyerId: "buyer_ext_113",
+      total: 4200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(41),
+      sellerId: seller8.id,
+      items: [{ product: p8[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_012",
+      buyerId: "buyer_ext_114",
+      total: 850,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(50),
+      sellerId: seller8.id,
+      items: [{ product: p8[3], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_013",
+      buyerId: "buyer_ext_115",
+      total: 3300,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(60),
+      sellerId: seller8.id,
+      items: [{ product: p8[1], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_014",
+      buyerId: "buyer_ext_116",
+      total: 1800,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(69),
+      sellerId: seller8.id,
+      items: [{ product: p8[2], quantity: 3 }],
+    },
+    {
+      buyerOrderId: "ord_s8_015",
+      buyerId: "buyer_ext_117",
+      total: 3900,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(81),
+      sellerId: seller8.id,
+      items: [{ product: p8[4], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_016",
+      buyerId: "buyer_ext_118",
+      total: 4200,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(95),
+      sellerId: seller8.id,
+      items: [{ product: p8[0], quantity: 1 }],
+    },
+    {
+      buyerOrderId: "ord_s8_017",
+      buyerId: "buyer_ext_119",
+      total: 1700,
+      status: IncomingOrderStatus.entregada,
+      createdAt: daysAgo(109),
+      sellerId: seller8.id,
+      items: [{ product: p8[3], quantity: 2 }],
+    },
+  ];
+
+  for (const o of ordenesS8) await crearOrden(o);
+  console.log("✅ Pedidos de Patagonia Verde creados");
 
   // ─── Acreditaciones ──────────────────────────────────────────────────────────
   // Una PayoutNotification por cada orden entregada (incluye también las nuevas
@@ -1309,6 +2273,12 @@ async function main() {
     { sellerId: seller1.id, paymentId: "pay_s1_021", amount: 8200, read: true,  createdAt: daysAgo(71, 13) },
     { sellerId: seller1.id, paymentId: "pay_s1_022", amount: 1500, read: true,  createdAt: daysAgo(78, 13) },
     { sellerId: seller1.id, paymentId: "pay_s1_023", amount: 3200, read: true,  createdAt: daysAgo(85, 13) },
+    // seller1 — extensión de historial: s1_024..s1_028
+    { sellerId: seller1.id, paymentId: "pay_s1_024", amount: 2300, read: true,  createdAt: daysAgo(91, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_025", amount: 6800, read: true,  createdAt: daysAgo(97, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_026", amount: 1700, read: true,  createdAt: daysAgo(103, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_027", amount: 4500, read: true,  createdAt: daysAgo(110, 13) },
+    { sellerId: seller1.id, paymentId: "pay_s1_028", amount: 3300, read: true,  createdAt: daysAgo(117, 13) },
     // seller2 — entregadas: s2_005..s2_007
     { sellerId: seller2.id, paymentId: "pay_s2_005", amount: 950,   read: true,  createdAt: hoursAgo(37) },
     { sellerId: seller2.id, paymentId: "pay_s2_006", amount: 14600, read: true,  createdAt: hoursAgo(61) },
@@ -1317,6 +2287,11 @@ async function main() {
     { sellerId: seller2.id, paymentId: "pay_s2_008", amount: 3100,  read: true,  createdAt: daysAgo(20, 13) },
     { sellerId: seller2.id, paymentId: "pay_s2_009", amount: 8500,  read: true,  createdAt: daysAgo(40, 13) },
     { sellerId: seller2.id, paymentId: "pay_s2_010", amount: 1900,  read: true,  createdAt: daysAgo(63, 13) },
+    // seller2 — extensión de historial: s2_011..s2_014
+    { sellerId: seller2.id, paymentId: "pay_s2_011", amount: 5200,  read: true,  createdAt: daysAgo(80, 13) },
+    { sellerId: seller2.id, paymentId: "pay_s2_012", amount: 950,   read: true,  createdAt: daysAgo(94, 13) },
+    { sellerId: seller2.id, paymentId: "pay_s2_013", amount: 12000, read: true,  createdAt: daysAgo(105, 13) },
+    { sellerId: seller2.id, paymentId: "pay_s2_014", amount: 2200,  read: true,  createdAt: daysAgo(115, 13) },
     // seller3 — entregadas: s3_005..s3_007
     { sellerId: seller3.id, paymentId: "pay_s3_005", amount: 8200,  read: false, createdAt: hoursAgo(51) },
     { sellerId: seller3.id, paymentId: "pay_s3_006", amount: 6100,  read: true,  createdAt: hoursAgo(76) },
@@ -1324,12 +2299,65 @@ async function main() {
     // seller3 — históricas: s3_008..s3_009
     { sellerId: seller3.id, paymentId: "pay_s3_008", amount: 5500,  read: true,  createdAt: daysAgo(25, 13) },
     { sellerId: seller3.id, paymentId: "pay_s3_009", amount: 2750,  read: true,  createdAt: daysAgo(48, 13) },
+    // seller3 — extensión de historial: s3_010..s3_014
+    { sellerId: seller3.id, paymentId: "pay_s3_010", amount: 4100,  read: true,  createdAt: daysAgo(58, 13) },
+    { sellerId: seller3.id, paymentId: "pay_s3_011", amount: 9200,  read: true,  createdAt: daysAgo(72, 13) },
+    { sellerId: seller3.id, paymentId: "pay_s3_012", amount: 1650,  read: true,  createdAt: daysAgo(86, 13) },
+    { sellerId: seller3.id, paymentId: "pay_s3_013", amount: 5500,  read: true,  createdAt: daysAgo(99, 13) },
+    { sellerId: seller3.id, paymentId: "pay_s3_014", amount: 2500,  read: true,  createdAt: daysAgo(112, 13) },
     // seller4 — entregadas: s4_005..s4_007
     { sellerId: seller4.id, paymentId: "pay_s4_005", amount: 1300,  read: true,  createdAt: hoursAgo(31) },
     { sellerId: seller4.id, paymentId: "pay_s4_006", amount: 3200,  read: true,  createdAt: hoursAgo(56) },
     { sellerId: seller4.id, paymentId: "pay_s4_007", amount: 5900,  read: false, createdAt: hoursAgo(81) },
     // seller4 — histórica: s4_008
     { sellerId: seller4.id, paymentId: "pay_s4_008", amount: 2400,  read: true,  createdAt: daysAgo(55, 13) },
+    // seller4 — extensión de historial: s4_009..s4_011
+    { sellerId: seller4.id, paymentId: "pay_s4_009", amount: 1800,  read: true,  createdAt: daysAgo(75, 13) },
+    { sellerId: seller4.id, paymentId: "pay_s4_010", amount: 4500,  read: true,  createdAt: daysAgo(93, 13) },
+    { sellerId: seller4.id, paymentId: "pay_s4_011", amount: 1600,  read: true,  createdAt: daysAgo(113, 13) },
+    // seller6 — entregadas: s6_005..s6_018
+    { sellerId: seller6.id, paymentId: "pay_s6_005", amount: 1900, read: true,  createdAt: hoursAgo(41) },
+    { sellerId: seller6.id, paymentId: "pay_s6_006", amount: 2400, read: true,  createdAt: hoursAgo(71) },
+    { sellerId: seller6.id, paymentId: "pay_s6_007", amount: 1100, read: true,  createdAt: daysAgo(10, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_008", amount: 4800, read: true,  createdAt: daysAgo(17, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_009", amount: 1560, read: true,  createdAt: daysAgo(24, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_010", amount: 5800, read: true,  createdAt: daysAgo(31, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_011", amount: 1900, read: true,  createdAt: daysAgo(38, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_012", amount: 2400, read: true,  createdAt: daysAgo(46, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_013", amount: 1100, read: true,  createdAt: daysAgo(54, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_014", amount: 4800, read: true,  createdAt: daysAgo(63, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_015", amount: 1900, read: true,  createdAt: daysAgo(74, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_016", amount: 2080, read: true,  createdAt: daysAgo(88, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_017", amount: 5800, read: true,  createdAt: daysAgo(101, 13) },
+    { sellerId: seller6.id, paymentId: "pay_s6_018", amount: 2400, read: true,  createdAt: daysAgo(111, 13) },
+    // seller7 — entregadas: s7_005..s7_017
+    { sellerId: seller7.id, paymentId: "pay_s7_005", amount: 1800, read: true,  createdAt: hoursAgo(45) },
+    { sellerId: seller7.id, paymentId: "pay_s7_006", amount: 3600, read: true,  createdAt: hoursAgo(67) },
+    { sellerId: seller7.id, paymentId: "pay_s7_007", amount: 1500, read: true,  createdAt: daysAgo(9, 13) },
+    { sellerId: seller7.id, paymentId: "pay_s7_008", amount: 2700, read: true,  createdAt: daysAgo(16, 13) },
+    { sellerId: seller7.id, paymentId: "pay_s7_009", amount: 1450, read: true,  createdAt: daysAgo(23, 13) },
+    { sellerId: seller7.id, paymentId: "pay_s7_010", amount: 3600, read: true,  createdAt: daysAgo(30, 13) },
+    { sellerId: seller7.id, paymentId: "pay_s7_011", amount: 1800, read: true,  createdAt: daysAgo(37, 13) },
+    { sellerId: seller7.id, paymentId: "pay_s7_012", amount: 750,  read: true,  createdAt: daysAgo(47, 13) },
+    { sellerId: seller7.id, paymentId: "pay_s7_013", amount: 2900, read: true,  createdAt: daysAgo(57, 13) },
+    { sellerId: seller7.id, paymentId: "pay_s7_014", amount: 2700, read: true,  createdAt: daysAgo(68, 13) },
+    { sellerId: seller7.id, paymentId: "pay_s7_015", amount: 3600, read: true,  createdAt: daysAgo(79, 13) },
+    { sellerId: seller7.id, paymentId: "pay_s7_016", amount: 1800, read: true,  createdAt: daysAgo(92, 13) },
+    { sellerId: seller7.id, paymentId: "pay_s7_017", amount: 1500, read: true,  createdAt: daysAgo(108, 13) },
+    // seller8 — entregadas: s8_005..s8_017
+    { sellerId: seller8.id, paymentId: "pay_s8_005", amount: 3900, read: true,  createdAt: hoursAgo(47) },
+    { sellerId: seller8.id, paymentId: "pay_s8_006", amount: 4200, read: true,  createdAt: hoursAgo(69) },
+    { sellerId: seller8.id, paymentId: "pay_s8_007", amount: 1700, read: true,  createdAt: daysAgo(11, 13) },
+    { sellerId: seller8.id, paymentId: "pay_s8_008", amount: 3300, read: true,  createdAt: daysAgo(19, 13) },
+    { sellerId: seller8.id, paymentId: "pay_s8_009", amount: 1200, read: true,  createdAt: daysAgo(26, 13) },
+    { sellerId: seller8.id, paymentId: "pay_s8_010", amount: 3900, read: true,  createdAt: daysAgo(33, 13) },
+    { sellerId: seller8.id, paymentId: "pay_s8_011", amount: 4200, read: true,  createdAt: daysAgo(41, 13) },
+    { sellerId: seller8.id, paymentId: "pay_s8_012", amount: 850,  read: true,  createdAt: daysAgo(50, 13) },
+    { sellerId: seller8.id, paymentId: "pay_s8_013", amount: 3300, read: true,  createdAt: daysAgo(60, 13) },
+    { sellerId: seller8.id, paymentId: "pay_s8_014", amount: 1800, read: true,  createdAt: daysAgo(69, 13) },
+    { sellerId: seller8.id, paymentId: "pay_s8_015", amount: 3900, read: true,  createdAt: daysAgo(81, 13) },
+    { sellerId: seller8.id, paymentId: "pay_s8_016", amount: 4200, read: true,  createdAt: daysAgo(95, 13) },
+    { sellerId: seller8.id, paymentId: "pay_s8_017", amount: 1700, read: true,  createdAt: daysAgo(109, 13) },
   ];
 
   await Promise.all(
@@ -1344,10 +2372,10 @@ async function main() {
   console.log("🌿 Seed completado con éxito");
   console.log("");
   console.log("📋 Resumen:");
-  console.log("   5 sellers (4 activos + 1 inactivo/suspendido)");
-  console.log("   39 productos en total (incluye 2 sin ventas y 2 del seller suspendido)");
-  console.log("   43 pedidos en total, distribuidos en ~90 días (todos los estados cubiertos)");
-  console.log("   33 acreditaciones");
+  console.log("   8 sellers (7 activos + 1 inactivo/suspendido)");
+  console.log("   55 productos en total (incluye productos sin ventas y los del seller suspendido)");
+  console.log("   119 pedidos en total, distribuidos en ~117 días (todos los estados cubiertos)");
+  console.log("   91 acreditaciones");
 }
 
 main()
