@@ -11,14 +11,19 @@ export async function POST(
   if (authError) return authError;
 
   const { id } = await params;
+  console.log("[stock-reservations/reject] request recibida", { id });
+
   if (!id) {
+    console.warn("[stock-reservations/reject] id ausente en params");
     return apiError("Invalid reservation ID", 400);
   }
 
   let body: { buyer_order_id?: string; rejected_at?: string } = {};
   try {
     body = await req.json();
+    console.log("[stock-reservations/reject] body recibido", body);
   } catch {
+    console.log("[stock-reservations/reject] sin body / body vacío");
   }
 
   try {
@@ -28,31 +33,62 @@ export async function POST(
     });
 
     if (!order) {
+      console.warn("[stock-reservations/reject] orden no encontrada", { buyerOrderId: id });
       return apiError("Reservation not found", 404);
     }
+
+    console.log("[stock-reservations/reject] orden encontrada", {
+      orderId: order.id,
+      buyerOrderId: order.buyerOrderId,
+      status: order.status,
+      itemsCount: order.items.length,
+    });
+
     if (order.status !== "pendiente") {
+      console.warn("[stock-reservations/reject] estado inválido para cancelar", {
+        buyerOrderId: id,
+        status: order.status,
+      });
       return apiError(`Cannot cancel order with status "${order.status}"`, 409);
     }
 
+    console.log(
+      "[stock-reservations/reject] liberando stock",
+      order.items.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+      }))
+    );
+
     await prisma.$transaction(async (tx) => {
       for (const item of order.items) {
-        await tx.product.update({
+        const updated = await tx.product.update({
           where: { id: item.productId },
           data: {
             stockAvailable: { increment: item.quantity },
             stockReserved: { decrement: item.quantity },
           },
         });
+        console.log("[stock-reservations/reject] stock actualizado", {
+          productId: updated.id,
+          stockAvailable: updated.stockAvailable,
+          stockReserved: updated.stockReserved,
+        });
       }
 
       await tx.incomingOrder.delete({ where: { buyerOrderId: id } });
+      console.log("[stock-reservations/reject] incomingOrder eliminada", { buyerOrderId: id });
     });
 
-    return NextResponse.json({
+    const responsePayload = {
       buyer_order_id: body.buyer_order_id ?? order.buyerOrderId,
       status: "cancelled",
       released_at: body.rejected_at ?? new Date().toISOString(),
-    });
+    };
+
+    console.log("[stock-reservations/reject] reserva cancelada OK", responsePayload);
+
+    return NextResponse.json(responsePayload);
   } catch (error) {
     console.error("[POST /api/stock-reservations/:id/reject]", error);
     return apiError("Error al rechazar la reserva", 500);
