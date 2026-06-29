@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
         id: s.id,
         name: s.name,
         email: s.email,
+        clerk_id: s.clerkUserId,
         city: s.city ?? null,    
         address: s.address ?? null,
         icon_url: s.iconUrl ?? null,
